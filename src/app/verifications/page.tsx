@@ -24,7 +24,7 @@ const columns: ColumnDef<Verification, unknown>[] = [
   {
     accessorKey: "id",
     header: "Verification ID",
-    size: 180,
+    size: 220,
     cell: ({ row }) => (
       <span className="font-mono text-[var(--color-text-secondary)]">
         {truncateId(row.original.id)}
@@ -34,7 +34,7 @@ const columns: ColumnDef<Verification, unknown>[] = [
   {
     accessorKey: "inquiryId",
     header: "Inquiry ID",
-    size: 180,
+    size: 220,
     cell: ({ row }) => (
       <span className="font-mono text-[var(--color-text-secondary)]">
         {truncateId(row.original.inquiryId)}

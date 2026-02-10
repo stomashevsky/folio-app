@@ -1,4 +1,5 @@
 import type { Inquiry } from "@/lib/types";
+import { generateId } from "./id-generator";
 
 export const mockInquiries: Inquiry[] = [
   {
@@ -224,8 +225,8 @@ for (let i = 0; i < names.length; i++) {
     : undefined;
 
   mockInquiries.push({
-    id: `inq_gen${String(i).padStart(3, "0")}`,
-    accountId: `act_gen${String(i).padStart(3, "0")}`,
+    id: generateId("inq", 100 + i),
+    accountId: generateId("act", 100 + i),
     accountName: names[i],
     status,
     templateName: templates[i % templates.length],

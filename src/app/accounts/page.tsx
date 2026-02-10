@@ -31,7 +31,7 @@ const columns: ColumnDef<Account, unknown>[] = [
   {
     accessorKey: "id",
     header: "Account ID",
-    size: 180,
+    size: 220,
     cell: ({ row }) => (
       <span className="font-mono text-[var(--color-text-secondary)]">
         {truncateId(row.original.id)}

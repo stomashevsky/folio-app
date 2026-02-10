@@ -5,7 +5,7 @@ export function formatDate(isoDate: string): string {
 }
 
 export function formatDateTime(isoDate: string): string {
-  return DateTime.fromISO(isoDate).toFormat("LLL dd, yyyy h:mm a");
+  return DateTime.fromISO(isoDate).toFormat("LLL dd, yyyy HH:mm");
 }
 
 export function formatDateShort(isoDate: string): string {
@@ -36,7 +36,7 @@ export function formatTrend(value: number): string {
   return `${sign}${value.toFixed(1)}%`;
 }
 
-export function truncateId(id: string, showChars = 8): string {
+export function truncateId(id: string, showChars = 12): string {
   if (id.length <= showChars + 4) return id;
   const prefix = id.split("_")[0];
   const rest = id.slice(prefix.length + 1);

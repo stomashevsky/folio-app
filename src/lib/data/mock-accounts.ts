@@ -1,4 +1,5 @@
 import type { Account } from "@/lib/types";
+import { generateId } from "./id-generator";
 
 export const mockAccounts: Account[] = [
   {
@@ -134,7 +135,7 @@ const accStatuses: Account["status"][] = ["active", "active", "active", "default
 for (let i = 0; i < moreNames.length; i++) {
   const date = new Date(2026, 0, 15 + Math.floor(i / 3), 8 + (i % 12), (i * 13) % 60);
   mockAccounts.push({
-    id: `act_gen${String(i).padStart(3, "0")}`,
+    id: generateId("act", 100 + i),
     name: moreNames[i],
     birthdate: `${1975 + (i % 25)}-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (i % 28)).padStart(2, "0")}`,
     age: 51 - (i % 25),

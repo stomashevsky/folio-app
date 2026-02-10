@@ -1,4 +1,5 @@
 import type { Report } from "@/lib/types";
+import { generateId } from "./id-generator";
 
 export const mockReports: Report[] = [
   {
@@ -104,8 +105,8 @@ for (let i = 0; i < reportNames.length; i++) {
   const date = new Date(2026, 0, 15 + Math.floor(i / 3), 9 + (i % 10), (i * 11) % 60);
   const status = repStatuses[i % repStatuses.length];
   mockReports.push({
-    id: `rep_gen${String(i).padStart(3, "0")}`,
-    accountId: `act_gen${String(i).padStart(3, "0")}`,
+    id: generateId("rep", 300 + i),
+    accountId: generateId("act", 100 + i),
     type: repTypes[i % repTypes.length],
     status,
     primaryInput: reportNames[i],

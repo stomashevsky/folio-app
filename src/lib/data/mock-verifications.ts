@@ -1,4 +1,5 @@
 import type { Verification, Check } from "@/lib/types";
+import { generateId } from "./id-generator";
 
 const govIdChecksAllPassed: Check[] = [
   { name: "Age comparison", status: "passed", category: "user_behavior", required: true },
@@ -150,8 +151,8 @@ for (let i = 0; i < 40; i++) {
   const type = verTypes[i % verTypes.length];
   const status = verStatuses[i % verStatuses.length];
   mockVerifications.push({
-    id: `ver_gen${String(i).padStart(3, "0")}`,
-    inquiryId: `inq_gen${String(Math.floor(i / 2)).padStart(3, "0")}`,
+    id: generateId("ver", 200 + i),
+    inquiryId: generateId("inq", 100 + Math.floor(i / 2)),
     type,
     status,
     createdAt: date.toISOString(),
