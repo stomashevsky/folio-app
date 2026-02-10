@@ -5,6 +5,7 @@
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-primitive.css";
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-semantic.css";
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-components.css";
+@import "../../node_modules/@plexui/ui/dist/es/styles/tailwind-utilities.css";
 
 /* Let Tailwind scan PlexUI component class usage */
 @source "../../node_modules/@plexui/ui";
