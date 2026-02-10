@@ -21,13 +21,16 @@ Online docs: https://plexui.com/docs
 npm install @plexui/ui
 ```
 
-**CSS imports in globals.css — import ONLY token files, NOT the full bundle:**
+**CSS imports in globals.css — import token files + tailwind utilities, NOT the full bundle:**
 ```css
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-primitive.css";
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-semantic.css";
 @import "../../node_modules/@plexui/ui/dist/es/styles/variables-components.css";
+@import "../../node_modules/@plexui/ui/dist/es/styles/tailwind-utilities.css";
 ```
 Do NOT use `@import "@plexui/ui/css"` — it conflicts with Tailwind's theme setup.
+
+**CRITICAL:** `tailwind-utilities.css` is required for PlexUI typography classes (`heading-sm`, `text-md`, etc.). Without it, `@utility` definitions are missing and classes render with no styles.
 
 Use `@source "../../node_modules/@plexui/ui"` in CSS for Tailwind class scanning.
 

@@ -22,12 +22,14 @@ Folio is a simplified KYC/Identity Verification analytics dashboard inspired by 
 
 ### CSS Setup (CRITICAL)
 - **DO NOT** import `@plexui/ui/css` — it resets Tailwind theme tokens
-- Import only the token CSS files in `globals.css`:
+- Import token CSS files + tailwind utilities in `globals.css`:
   ```css
   @import "../../node_modules/@plexui/ui/dist/es/styles/variables-primitive.css";
   @import "../../node_modules/@plexui/ui/dist/es/styles/variables-semantic.css";
   @import "../../node_modules/@plexui/ui/dist/es/styles/variables-components.css";
+  @import "../../node_modules/@plexui/ui/dist/es/styles/tailwind-utilities.css";
   ```
+- `tailwind-utilities.css` is **required** for PlexUI typography classes (`heading-sm`, `text-md`, etc.) — without it, `@utility` definitions are missing and classes have no effect
 - Use `@source "../../node_modules/@plexui/ui"` for Tailwind class scanning
 
 ### Component Imports
