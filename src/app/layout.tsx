@@ -35,7 +35,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex h-dvh flex-col">
             <Navbar />
-            <SidebarProvider collapsible="icon" className="flex-1 overflow-hidden">
+            <SidebarProvider collapsible="none" className="flex-1 overflow-hidden">
               <SidebarLayout className="flex-1 overflow-hidden">
                 <AppSidebar />
                 <SidebarInset>{children}</SidebarInset>
