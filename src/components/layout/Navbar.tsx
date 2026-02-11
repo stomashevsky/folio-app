@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar } from "@plexui/ui/components/Avatar";
 import { ChevronsUpDown, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -15,9 +16,7 @@ export function Navbar() {
           type="button"
           className="relative flex h-8 items-center gap-2 rounded-lg py-0 pl-1.5 pr-2.5 text-sm font-medium text-[var(--color-text)] before:pointer-events-none before:absolute before:inset-0 before:rounded-lg before:transition-colors hover:before:bg-black/[0.08]"
         >
-          <span className="flex h-[25px] w-[25px] items-center justify-center rounded-full bg-[rgb(24,24,24)] text-sm font-semibold text-white">
-            F
-          </span>
+          <Avatar name="Folio" size={25} color="primary" variant="solid" />
           <span>Acme Corp</span>
           <ChevronsUpDown className="h-3.5 w-3.5 text-[rgb(143,143,143)]" />
         </button>
@@ -47,13 +46,7 @@ export function Navbar() {
         >
           <Settings className="h-5 w-5" />
         </button>
-        <button
-          type="button"
-          className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[var(--color-text)] text-xs font-semibold text-[var(--color-surface)]"
-          aria-label="Profile"
-        >
-          AS
-        </button>
+        <Avatar name="Alex" size={28} color="primary" variant="solid" />
       </div>
     </header>
   );
