@@ -8,7 +8,6 @@ import { formatDateTime, truncateId } from "@/lib/utils/format";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@plexui/ui/components/Button";
 import {
-  ArrowLeft,
   CheckCircle2,
   XCircle,
 } from "lucide-react";
@@ -83,17 +82,7 @@ export default function VerificationDetailPage() {
       <TopBar
         title={`${verification.type.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())} Verification`}
         description={truncateId(verification.id)}
-        actions={
-          <Button
-            color="secondary"
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/verifications")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        }
+        backHref="/verifications"
       />
       <div className="px-6 pb-6 pt-6">
         {/* Summary */}
@@ -137,7 +126,7 @@ export default function VerificationDetailPage() {
 
         {/* Details */}
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ChartCard title="Details" description="Verification information">
+          <ChartCard title="Verification Details">
             <div className="space-y-3">
               {[
                 ["Verification ID", verification.id],
@@ -165,10 +154,7 @@ export default function VerificationDetailPage() {
 
           {verification.extractedData &&
             Object.keys(verification.extractedData).length > 0 && (
-              <ChartCard
-                title="Extracted Data"
-                description="Data extracted from verification"
-              >
+              <ChartCard title="Extracted Data">
                 <div className="space-y-3">
                   {Object.entries(verification.extractedData).map(
                     ([key, value]) => (

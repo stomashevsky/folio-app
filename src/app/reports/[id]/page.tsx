@@ -7,7 +7,7 @@ import { mockReports } from "@/lib/data";
 import { formatDateTime, truncateId } from "@/lib/utils/format";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@plexui/ui/components/Button";
-import { ArrowLeft, Eye, Shield } from "lucide-react";
+import { Eye, Shield } from "lucide-react";
 
 const typeLabels: Record<string, string> = {
   watchlist: "🌐 Watchlist Report",
@@ -50,17 +50,7 @@ export default function ReportDetailPage() {
       <TopBar
         title={report.primaryInput}
         description={typeLabels[report.type] ?? report.type}
-        actions={
-          <Button
-            color="secondary"
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/reports")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        }
+        backHref="/reports"
       />
       <div className="px-6 pb-6 pt-6">
         {/* Summary */}
@@ -101,7 +91,7 @@ export default function ReportDetailPage() {
 
         {/* Details */}
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ChartCard title="Report Details" description="Full report information">
+          <ChartCard title="Report Details">
             <div className="space-y-3">
               {[
                 ["Report ID", report.id],
@@ -130,7 +120,7 @@ export default function ReportDetailPage() {
             </div>
           </ChartCard>
 
-          <ChartCard title="Screening Results" description="Match details">
+          <ChartCard title="Screening Results">
             {report.matchCount === 0 ? (
               <div className="flex flex-col items-center justify-center py-8">
                 <Shield className="h-10 w-10 text-[var(--color-success-soft-text)]" />

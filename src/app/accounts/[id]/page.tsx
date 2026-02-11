@@ -9,7 +9,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@plexui/ui/components/Button";
 import {
-  ArrowLeft,
   User,
   FileSearch,
   ShieldCheck,
@@ -64,17 +63,7 @@ export default function AccountDetailPage() {
       <TopBar
         title={account.name}
         description={truncateId(account.id)}
-        actions={
-          <Button
-            color="secondary"
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/accounts")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        }
+        backHref="/accounts"
       />
       <div className="px-6 pb-6 pt-6">
         {/* Profile Header */}
@@ -162,7 +151,7 @@ export default function AccountDetailPage() {
         <div className="mt-6">
           {activeTab === "Overview" && (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <ChartCard title="Profile" description="Account information">
+              <ChartCard title="Profile">
                 <div className="space-y-3">
                   {[
                     ["Account ID", account.id],
@@ -189,7 +178,7 @@ export default function AccountDetailPage() {
                 </div>
               </ChartCard>
 
-              <ChartCard title="Activity Summary" description="Recent activity">
+              <ChartCard title="Activity Summary">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 rounded-lg bg-[var(--color-surface-secondary)] p-3">
                     <FileSearch className="h-5 w-5 text-[var(--color-text-tertiary)]" />

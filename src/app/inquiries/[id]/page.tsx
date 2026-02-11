@@ -14,12 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@plexui/ui/components/Button";
 import {
-  ArrowLeft,
   User,
-  Clock,
-  Shield,
-  FileText,
-  AlertTriangle,
   CheckCircle2,
   XCircle,
 } from "lucide-react";
@@ -91,40 +86,24 @@ export default function InquiryDetailPage() {
     <main className="flex-1">
       <TopBar
         title={inquiry.accountName}
-        description={`Inquiry ${truncateId(inquiry.id)}`}
-        actions={
-          <Button
-            color="secondary"
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/inquiries")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        }
+        description={truncateId(inquiry.id)}
+        backHref="/inquiries"
       />
       <div className="px-6 pb-6 pt-6">
         {/* Summary cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <div className="flex items-center gap-2 text-[var(--color-text-tertiary)]">
-              <Shield className="h-4 w-4" />
-              <span className="text-xs font-medium uppercase tracking-wider">
-                Status
-              </span>
-            </div>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+              Status
+            </span>
             <div className="mt-2">
               <StatusBadge status={inquiry.status} />
             </div>
           </div>
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <div className="flex items-center gap-2 text-[var(--color-text-tertiary)]">
-              <Clock className="h-4 w-4" />
-              <span className="text-xs font-medium uppercase tracking-wider">
-                Time to Finish
-              </span>
-            </div>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+              Time to Finish
+            </span>
             <p className="mt-2 text-lg font-semibold text-[var(--color-text)]">
               {inquiry.timeToFinish
                 ? formatDuration(inquiry.timeToFinish)
@@ -132,24 +111,18 @@ export default function InquiryDetailPage() {
             </p>
           </div>
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <div className="flex items-center gap-2 text-[var(--color-text-tertiary)]">
-              <FileText className="h-4 w-4" />
-              <span className="text-xs font-medium uppercase tracking-wider">
-                Verifications
-              </span>
-            </div>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+              Verifications
+            </span>
             <p className="mt-2 text-lg font-semibold text-[var(--color-text)]">
               GovID: {inquiry.verificationAttempts.governmentId} / Selfie:{" "}
               {inquiry.verificationAttempts.selfie}
             </p>
           </div>
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-            <div className="flex items-center gap-2 text-[var(--color-text-tertiary)]">
-              <AlertTriangle className="h-4 w-4" />
-              <span className="text-xs font-medium uppercase tracking-wider">
-                List Matches
-              </span>
-            </div>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+              List Matches
+            </span>
             <p className="mt-2 text-lg font-semibold text-[var(--color-text)]">
               {inquiry.listMatches}
             </p>
@@ -182,7 +155,7 @@ export default function InquiryDetailPage() {
         <div className="mt-6">
           {activeTab === "Overview" && (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <ChartCard title="Details" description="Inquiry information">
+              <ChartCard title="Inquiry Details">
                 <div className="space-y-3">
                   {[
                     ["Inquiry ID", inquiry.id],
@@ -215,7 +188,7 @@ export default function InquiryDetailPage() {
                 </div>
               </ChartCard>
 
-              <ChartCard title="Account" description="Linked account">
+              <ChartCard title="Linked Account">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-soft-bg)]">
                     <User className="h-6 w-6 text-[var(--color-primary-soft-text)]" />
