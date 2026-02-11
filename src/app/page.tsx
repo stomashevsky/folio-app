@@ -220,7 +220,7 @@ export default function DashboardHome() {
                 Last 10 inquiries
               </p>
             </div>
-            <ButtonLink href="/inquiries" color="secondary" variant="soft" size="sm">
+            <ButtonLink href="/inquiries" color="secondary" variant="soft" size="sm" pill={false}>
               View all
             </ButtonLink>
           </div>
