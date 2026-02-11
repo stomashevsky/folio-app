@@ -43,7 +43,8 @@ export function Navbar() {
         <Button
           color="primary"
           variant="ghost"
-          size="md"
+          size="sm"
+          iconSize="lg"
           uniform
           onClick={() => router.push("/settings")}
           aria-label="Settings"
