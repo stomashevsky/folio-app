@@ -18,17 +18,13 @@ export function MetricCard({ label, value, trend, description }: MetricCardProps
   return (
     <div className="flex flex-col justify-between rounded-[10px] border border-black/10 bg-[var(--color-surface)] p-5 dark:border-white/10">
       {/* Top row: label + trend badge */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-[var(--color-text-secondary)]">
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm text-[var(--color-text-secondary)]">
           {label}
         </p>
         {trend && (
           <span
-            className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ${
-              isPositive
-                ? "border-[var(--color-border)] text-[var(--color-text-secondary)]"
-                : "border-[var(--color-border)] text-[var(--color-text-secondary)]"
-            }`}
+            className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] px-2 py-0.5 text-xs text-[var(--color-text-secondary)]"
           >
             {isPositive ? (
               <TrendingUp className="h-3 w-3" />
@@ -54,7 +50,7 @@ export function MetricCard({ label, value, trend, description }: MetricCardProps
               {description}
             </p>
             {trend?.label && (
-              <p className="text-xs text-[var(--color-text-tertiary)]">
+              <p className="text-sm text-[var(--color-text-tertiary)]">
                 {trend.label}
               </p>
             )}

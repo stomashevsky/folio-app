@@ -1,13 +1,17 @@
 "use client";
 
 import { Avatar } from "@plexui/ui/components/Avatar";
-import { Button } from "@plexui/ui/components/Button";
-import { SettingsCog } from "@plexui/ui/components/Icon";
 import { ChevronsUpDown } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navItems = [
+  { label: "Dashboard", href: "/" },
+  { label: "Settings", href: "/settings" },
+];
 
 export function Navbar() {
-  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <header className="flex h-[54px] shrink-0 items-center justify-between bg-[var(--color-surface-tertiary)] px-3">
@@ -38,28 +42,34 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Right: Dashboard + Settings + Profile */}
-      <div className="flex items-center gap-4">
-        <Button
-          color="primary"
-          variant="ghost"
-          pill={false}
-          onClick={() => router.push("/")}
-        >
-          Dashboard
-        </Button>
-        <Button
-          color="primary"
-          variant="ghost"
-          size="sm"
-          iconSize="lg"
-          uniform
-          onClick={() => router.push("/settings")}
-          aria-label="Settings"
-        >
-          <SettingsCog />
-        </Button>
-        <Avatar name="Alex" size={28} color="primary" variant="solid" />
+      {/* Right: Nav items + Profile */}
+      <div className="flex items-center gap-1">
+        <nav className="flex items-center gap-1">
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/" || (!pathname.startsWith("/settings"))
+                : pathname.startsWith(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative flex h-8 items-center rounded-lg px-3 text-sm transition-colors ${
+                  isActive
+                    ? "bg-black/[0.08] font-medium text-[var(--color-text)] dark:bg-white/[0.08]"
+                    : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="ml-3">
+          <Avatar name="Alex" size={28} color="primary" variant="solid" />
+        </div>
       </div>
     </header>
   );

@@ -202,22 +202,20 @@ export function DocumentViewer({
           />
 
           {/* Nav arrows */}
-          {hasPrev && (
-            <button
-              className="absolute left-4 top-1/2 flex h-10 w-10 cursor-pointer -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-              onClick={goPrev}
-            >
-              <ChevronLeftMd />
-            </button>
-          )}
-          {hasNext && (
-            <button
-              className="absolute right-4 top-1/2 flex h-10 w-10 cursor-pointer -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-              onClick={goNext}
-            >
-              <ChevronRightMd />
-            </button>
-          )}
+          <button
+            className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors enabled:cursor-pointer enabled:hover:bg-white/20 disabled:opacity-30 disabled:cursor-default"
+            onClick={goPrev}
+            disabled={!hasPrev}
+          >
+            <ChevronLeftMd />
+          </button>
+          <button
+            className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors enabled:cursor-pointer enabled:hover:bg-white/20 disabled:opacity-30 disabled:cursor-default"
+            onClick={goNext}
+            disabled={!hasNext}
+          >
+            <ChevronRightMd />
+          </button>
         </div>
 
         {/* Sidebar — always visible */}

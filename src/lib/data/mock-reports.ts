@@ -87,34 +87,56 @@ export const mockReports: Report[] = [
   },
 ];
 
-/* ── Generate additional reports ── */
-const reportNames = [
-  "DAVID KIM", "MEGAN FOX", "RAJ GUPTA", "ISABELLA ROSSI", "OLIVER BROWN",
-  "NADIA PETROV", "THOMAS WRIGHT", "LING ZHANG", "STEFAN MUELLER", "AISHA KHAN",
-  "LUCAS SILVA", "EVA NOVAK", "MICHAEL O'BRIEN", "HANA WATANABE", "ROBERT TAYLOR",
-  "CAMILLE BERNARD", "VIKTOR KOZLOV", "AMARA OBI", "HENRIK JOHANSSON", "CLARA VEGA",
-  "DANIEL PARK", "SARA NILSSON", "ANDREI POPESCU", "LEILA AMIRI", "GEORGE WILSON",
-  "NATASHA VOLKOV", "FELIPE MORENO", "FREYA SCHMIDT", "KENJI ITO", "ZARA HUSSAIN",
-  "PIERRE LEFEBVRE", "MAYA SINGH", "IVAN HORVAT", "ELISA TORRES", "OSCAR LINDBERG",
-];
-const repTypes: Report["type"][] = ["watchlist", "pep", "watchlist", "adverse_media"];
-const repStatuses: Report["status"][] = ["no_matches", "no_matches", "no_matches", "match"];
-const repTemplates = ["KYC + AML: Watchlist Report", "KYC + AML: PEP Report", "Manual Watchlist Screening"];
+/* ── Generate reports from shared seed data ── */
+import { generatedPeople } from "./mock-data-seed";
 
-for (let i = 0; i < reportNames.length; i++) {
-  const date = new Date(2026, 0, 15 + Math.floor(i / 3), 9 + (i % 10), (i * 11) % 60);
-  const status = repStatuses[i % repStatuses.length];
+let repIdx = 300;
+
+for (const p of generatedPeople) {
+  const isAml = p.templateName.includes("AML");
+  const finished = p.status === "approved" || p.status === "declined" || p.status === "needs_review";
+
+  // Only AML-template completed inquiries get reports
+  if (!isAml || !finished) continue;
+
+  const inquiryId = generateId("inq", 100 + p.index);
+  const accountId = generateId("act", 100 + p.index);
+  const reportDate = p.completedAt ?? p.createdAt;
+  const reportTime = new Date(new Date(reportDate).getTime() + 1000);
+
+  // needs_review → watchlist match; others → no_matches
+  const watchlistStatus: Report["status"] = p.status === "needs_review" ? "match" : "no_matches";
+  const watchlistMatches = watchlistStatus === "match" ? 1 + (p.index % 3) : 0;
+
+  // Watchlist report
   mockReports.push({
-    id: generateId("rep", 300 + i),
-    accountId: generateId("act", 100 + i),
-    type: repTypes[i % repTypes.length],
-    status,
-    primaryInput: reportNames[i],
-    templateName: repTemplates[i % repTemplates.length],
-    createdAt: date.toISOString(),
-    completedAt: new Date(date.getTime() + 1000).toISOString(),
-    continuousMonitoring: i % 3 === 0,
-    createdBy: i % 5 === 0 ? "manual" : "workflow",
-    matchCount: status === "match" ? 1 + (i % 3) : 0,
+    id: generateId("rep", repIdx++),
+    inquiryId,
+    accountId,
+    type: "watchlist",
+    status: watchlistStatus,
+    primaryInput: p.name.toUpperCase(),
+    templateName: "KYC + AML: Watchlist Report",
+    createdAt: reportTime.toISOString(),
+    completedAt: new Date(reportTime.getTime() + 1000).toISOString(),
+    continuousMonitoring: watchlistStatus === "match" || p.index % 4 === 0,
+    createdBy: "workflow",
+    matchCount: watchlistMatches,
+  });
+
+  // PEP report
+  mockReports.push({
+    id: generateId("rep", repIdx++),
+    inquiryId,
+    accountId,
+    type: "pep",
+    status: "no_matches",
+    primaryInput: p.name.toUpperCase(),
+    templateName: "KYC + AML: PEP Report",
+    createdAt: reportTime.toISOString(),
+    completedAt: new Date(reportTime.getTime() + 1000).toISOString(),
+    continuousMonitoring: false,
+    createdBy: "workflow",
+    matchCount: 0,
   });
 }

@@ -119,32 +119,43 @@ export const mockAccounts: Account[] = [
   },
 ];
 
-/* ── Generate additional accounts ── */
-const moreNames = [
-  "David Kim", "Megan Fox", "Raj Gupta", "Isabella Rossi", "Oliver Brown",
-  "Nadia Petrov", "Thomas Wright", "Ling Zhang", "Stefan Mueller", "Aisha Khan",
-  "Lucas Silva", "Eva Novak", "Michael O'Brien", "Hana Watanabe", "Robert Taylor",
-  "Camille Bernard", "Viktor Kozlov", "Amara Obi", "Henrik Johansson", "Clara Vega",
-  "Daniel Park", "Sara Nilsson", "Andrei Popescu", "Leila Amiri", "George Wilson",
-  "Natasha Volkov", "Felipe Moreno", "Freya Schmidt", "Kenji Ito", "Zara Hussain",
-  "Pierre Lefebvre", "Maya Singh", "Ivan Horvat", "Elisa Torres", "Oscar Lindberg",
-  "Fatou Diallo", "Liam Murphy", "Suki Lee", "Marco Bianchi", "Ingrid Larsen",
-];
-const accStatuses: Account["status"][] = ["active", "active", "active", "default", "suspended"];
+/* ── Generate accounts from shared seed data ── */
+import { generatedPeople } from "./mock-data-seed";
 
-for (let i = 0; i < moreNames.length; i++) {
-  const date = new Date(2026, 0, 15 + Math.floor(i / 3), 8 + (i % 12), (i * 13) % 60);
+for (const p of generatedPeople) {
+  const finished = p.status === "approved" || p.status === "declined" || p.status === "needs_review";
+  const hasSelfie = p.templateName.includes("Selfie");
+  const isAml = p.templateName.includes("AML");
+
+  // Derive account status from inquiry status
+  let accStatus: Account["status"];
+  if (p.status === "approved") accStatus = "active";
+  else if (p.status === "declined") accStatus = "suspended";
+  else accStatus = "default";
+
+  // Count verifications (govId attempts + selfie attempts)
+  const verCount = finished
+    ? p.verificationAttempts.governmentId + (hasSelfie ? p.verificationAttempts.selfie : 0)
+    : 0;
+
+  // Count reports (AML completed inquiries get watchlist + PEP)
+  const repCount = finished && isAml ? 2 : 0;
+
+  const updatedAt = p.completedAt ?? p.createdAt;
+
   mockAccounts.push({
-    id: generateId("act", 100 + i),
-    name: moreNames[i],
-    birthdate: `${1975 + (i % 25)}-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (i % 28)).padStart(2, "0")}`,
-    age: 51 - (i % 25),
-    status: accStatuses[i % accStatuses.length],
+    id: generateId("act", 100 + p.index),
+    name: p.name,
+    birthdate: p.birthdate,
+    address: p.address,
+    age: p.age,
+    status: accStatus,
     type: "User",
-    createdAt: date.toISOString(),
-    updatedAt: new Date(date.getTime() + 600000).toISOString(),
-    inquiryCount: 1 + (i % 3),
-    verificationCount: 1 + (i % 4),
-    reportCount: i % 3,
+    referenceId: p.referenceId,
+    createdAt: p.createdAt,
+    updatedAt,
+    inquiryCount: 1,
+    verificationCount: verCount,
+    reportCount: repCount,
   });
 }

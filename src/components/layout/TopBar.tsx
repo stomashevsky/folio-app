@@ -15,7 +15,7 @@ export function TopBar({ title, description, actions, toolbar, backHref }: TopBa
 
   return (
     <div className="sticky top-0 z-10 shrink-0 border-b border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-3">
-      {/* Row 1: title + actions (when no toolbar) */}
+      {/* Row 1: title + actions (always in title row) */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           {backHref && (
@@ -41,20 +41,15 @@ export function TopBar({ title, description, actions, toolbar, backHref }: TopBa
             )}
           </div>
         </div>
-        {!hasToolbar && actions && (
-          <div className="flex items-center gap-2">{actions}</div>
+        {actions && (
+          <div className="flex shrink-0 items-center gap-2">{actions}</div>
         )}
       </div>
 
-      {/* Row 2: toolbar (search left) + actions (right) */}
+      {/* Row 2: toolbar (filters only) */}
       {hasToolbar && (
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            {toolbar}
-          </div>
-          {actions && (
-            <div className="flex items-center gap-2">{actions}</div>
-          )}
+        <div className="mt-3 flex min-w-0 flex-wrap items-center gap-2">
+          {toolbar}
         </div>
       )}
     </div>

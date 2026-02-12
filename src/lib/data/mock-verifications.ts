@@ -83,6 +83,18 @@ const govIdChecksFailed: Check[] = govIdChecksAllPassed.map((c) =>
       : c
 );
 
+const selfieChecksFailedLiveness: Check[] = selfieChecksAllPassed.map((c) =>
+  c.name === "Selfie liveness"
+    ? { ...c, status: "failed" as const, reasons: ["Liveness check failed — potential spoofing detected"] }
+    : c
+);
+
+const govIdChecksExpired: Check[] = govIdChecksAllPassed.map((c) =>
+  c.name === "Expiration"
+    ? { ...c, status: "failed" as const, reasons: ["Document has expired"] }
+    : c
+);
+
 export const mockVerifications: Verification[] = [
   // Inquiry 1: Alexander J Sample → person 0 (Andre)
   {
@@ -194,24 +206,93 @@ export const mockVerifications: Verification[] = [
   },
 ];
 
-/* ── Generate additional verifications ── */
-const verTypes: Verification["type"][] = ["government_id", "selfie", "government_id", "selfie", "document"];
-const verStatuses: Verification["status"][] = ["passed", "passed", "passed", "failed", "passed"];
+/* ── Generate verifications from shared seed data ── */
+import { generatedPeople } from "./mock-data-seed";
 
-for (let i = 0; i < 40; i++) {
-  const date = new Date(2026, 0, 15 + Math.floor(i / 4), 8 + (i % 12), (i * 7) % 60);
-  const type = verTypes[i % verTypes.length];
-  const status = verStatuses[i % verStatuses.length];
-  const inquiryIndex = Math.floor(i / 2);
-  const person = getPersonPhotos(inquiryIndex);
-  mockVerifications.push({
-    id: generateId("ver", 200 + i),
-    inquiryId: generateId("inq", 100 + inquiryIndex),
-    type,
-    status,
-    createdAt: date.toISOString(),
-    completedAt: new Date(date.getTime() + 15000 + (i * 3000)).toISOString(),
-    checks: type === "selfie" ? selfieChecksAllPassed : (status === "failed" ? govIdChecksFailed : govIdChecksAllPassed),
-    photos: type === "selfie" ? person.selfie : type === "government_id" ? person.govId : undefined,
-  });
+let verIdx = 200;
+
+for (const p of generatedPeople) {
+  const inquiryId = generateId("inq", 100 + p.index);
+  const photos = getPersonPhotos(p.index);
+  const hasSelfie = p.templateName.includes("Selfie");
+  const createdDate = new Date(p.createdAt);
+  const finished = p.status === "approved" || p.status === "declined" || p.status === "needs_review";
+
+  if (!finished) continue; // no verifications for pending/created/expired
+
+  // ── Government ID verification(s) ──
+  const govIdAttempts = p.verificationAttempts.governmentId;
+  for (let attempt = 0; attempt < govIdAttempts; attempt++) {
+    const isLastAttempt = attempt === govIdAttempts - 1;
+    const attemptTime = new Date(createdDate.getTime() + (attempt + 1) * 45000);
+
+    // Determine status: last attempt reflects final outcome, earlier attempts always fail
+    let govStatus: Verification["status"];
+    let govChecks: Check[];
+    if (!isLastAttempt) {
+      govStatus = "failed";
+      govChecks = attempt % 2 === 0 ? govIdChecksFailed : govIdChecksExpired;
+    } else if (p.status === "declined" && p.verificationAttempts.selfie <= 1) {
+      // Declined due to gov ID
+      govStatus = "failed";
+      govChecks = govIdChecksFailed;
+    } else {
+      govStatus = "passed";
+      govChecks = govIdChecksAllPassed;
+    }
+
+    mockVerifications.push({
+      id: generateId("ver", verIdx++),
+      inquiryId,
+      type: "government_id",
+      status: govStatus,
+      createdAt: attemptTime.toISOString(),
+      completedAt: new Date(attemptTime.getTime() + 8000 + attempt * 2000).toISOString(),
+      checks: govChecks,
+      photos: photos.govId,
+      extractedData: {
+        "Full name": p.name.toUpperCase(),
+        "Birthdate": p.birthdateFormatted,
+        "ID number": p.idNumber,
+        "Issuing country": p.issuingCountry,
+        "Expiration date": p.expirationDate,
+      },
+    });
+  }
+
+  // ── Selfie verification(s) ──
+  if (hasSelfie) {
+    const selfieAttempts = p.verificationAttempts.selfie;
+    for (let attempt = 0; attempt < selfieAttempts; attempt++) {
+      const isLastAttempt = attempt === selfieAttempts - 1;
+      const attemptTime = new Date(
+        createdDate.getTime() + govIdAttempts * 45000 + (attempt + 1) * 30000
+      );
+
+      let selfieStatus: Verification["status"];
+      let selfieChecks: Check[];
+      if (!isLastAttempt) {
+        selfieStatus = "failed";
+        selfieChecks = selfieChecksFailedLiveness;
+      } else if (p.status === "declined" && p.verificationAttempts.governmentId <= 1) {
+        // Declined due to selfie
+        selfieStatus = "failed";
+        selfieChecks = selfieChecksFailedLiveness;
+      } else {
+        selfieStatus = "passed";
+        selfieChecks = selfieChecksAllPassed;
+      }
+
+      mockVerifications.push({
+        id: generateId("ver", verIdx++),
+        inquiryId,
+        type: "selfie",
+        status: selfieStatus,
+        createdAt: attemptTime.toISOString(),
+        completedAt: new Date(attemptTime.getTime() + 2000).toISOString(),
+        checks: selfieChecks,
+        photos: photos.selfie,
+      });
+    }
+  }
 }

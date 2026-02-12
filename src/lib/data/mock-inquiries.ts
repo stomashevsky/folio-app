@@ -196,48 +196,24 @@ export const mockInquiries: Inquiry[] = [
   },
 ];
 
-/* ── Generate additional inquiries for realistic pagination ── */
-const names = [
-  "David Kim", "Megan Fox", "Raj Gupta", "Isabella Rossi", "Oliver Brown",
-  "Nadia Petrov", "Thomas Wright", "Ling Zhang", "Stefan Mueller", "Aisha Khan",
-  "Lucas Silva", "Eva Novak", "Michael O'Brien", "Hana Watanabe", "Robert Taylor",
-  "Camille Bernard", "Viktor Kozlov", "Amara Obi", "Henrik Johansson", "Clara Vega",
-  "Daniel Park", "Sara Nilsson", "Andrei Popescu", "Leila Amiri", "George Wilson",
-  "Natasha Volkov", "Felipe Moreno", "Freya Schmidt", "Kenji Ito", "Zara Hussain",
-  "Pierre Lefebvre", "Maya Singh", "Ivan Horvat", "Elisa Torres", "Oscar Lindberg",
-  "Fatou Diallo", "Liam Murphy", "Suki Lee", "Marco Bianchi", "Ingrid Larsen",
-];
-const statuses: Inquiry["status"][] = [
-  "approved", "approved", "approved", "approved", "approved",
-  "approved", "declined", "needs_review", "pending", "expired",
-];
-const templates = ["KYC + AML: GovID + Selfie", "KYC: GovID Only"];
-const tagSets: string[][] = [[], [], [], ["premium"], ["high-risk"], ["eu-resident"]];
+/* ── Generate 115 inquiries from shared seed data ── */
+import { generatedPeople } from "./mock-data-seed";
 
-for (let i = 0; i < names.length; i++) {
-  const status = statuses[i % statuses.length];
-  const date = new Date(2026, 0, 15 + Math.floor(i / 3), 8 + (i % 12), (i * 17) % 60);
-  const iso = date.toISOString();
-  const finished = status === "approved" || status === "declined" || status === "needs_review";
-  const ttf = finished ? 250 + (i * 37) % 500 : undefined;
-  const completedAt = finished
-    ? new Date(date.getTime() + (ttf ?? 300) * 1000).toISOString()
-    : undefined;
-
+for (const p of generatedPeople) {
   mockInquiries.push({
-    id: generateId("inq", 100 + i),
-    accountId: generateId("act", 100 + i),
-    accountName: names[i],
-    status,
-    templateName: templates[i % templates.length],
-    createdAt: iso,
-    completedAt,
-    timeToFinish: ttf,
-
-    verificationAttempts: {
-      governmentId: finished ? 1 + (i % 3 === 0 ? 1 : 0) : 0,
-      selfie: finished && templates[i % templates.length].includes("Selfie") ? 1 : 0,
-    },
-    tags: tagSets[i % tagSets.length],
+    id: generateId("inq", 100 + p.index),
+    accountId: generateId("act", 100 + p.index),
+    accountName: p.name,
+    status: p.status,
+    templateName: p.templateName,
+    createdAt: p.createdAt,
+    completedAt: p.completedAt,
+    timeToFinish: p.timeToFinish,
+    referenceId: p.referenceId,
+    verificationAttempts: p.verificationAttempts,
+    tags: p.tags,
   });
 }
+
+/* Sort all inquiries by createdAt descending */
+mockInquiries.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

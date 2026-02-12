@@ -23,7 +23,7 @@ export function ChartCard({
             {title}
           </h3>
           {description && (
-            <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">
+            <p className="mt-0.5 text-sm text-[var(--color-text-tertiary)]">
               {description}
             </p>
           )}

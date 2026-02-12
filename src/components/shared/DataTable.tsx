@@ -9,6 +9,7 @@ import {
   flexRender,
   type ColumnDef,
   type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
@@ -46,7 +47,7 @@ export function TableSearch({
   placeholder = "Search...",
 }: TableSearchProps) {
   return (
-    <div className="w-80">
+    <div className="w-56">
       <Input
         placeholder={placeholder}
         value={value}
@@ -70,6 +71,11 @@ interface DataTableProps<T> {
   globalFilter?: string;
   onRowClick?: (row: T) => void;
   pageSize?: number;
+  /** Default sorting state */
+  initialSorting?: SortingState;
+  /** Controlled column visibility state */
+  columnVisibility?: VisibilityState;
+  onColumnVisibilityChange?: (visibility: VisibilityState) => void;
 }
 
 export function DataTable<T>({
@@ -78,8 +84,11 @@ export function DataTable<T>({
   globalFilter: externalFilter = "",
   onRowClick,
   pageSize = 10,
+  initialSorting = [],
+  columnVisibility,
+  onColumnVisibilityChange,
 }: DataTableProps<T>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>(initialSorting);
 
   const table = useReactTable({
     data,
@@ -87,8 +96,18 @@ export function DataTable<T>({
     state: {
       sorting,
       globalFilter: externalFilter,
+      ...(columnVisibility !== undefined && { columnVisibility }),
     },
     onSortingChange: setSorting,
+    ...(onColumnVisibilityChange && {
+      onColumnVisibilityChange: (updater) => {
+        const next =
+          typeof updater === "function"
+            ? updater(columnVisibility ?? {})
+            : updater;
+        onColumnVisibilityChange(next);
+      },
+    }),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -104,14 +123,14 @@ export function DataTable<T>({
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Table – scrollable area */}
       <div className="min-h-0 flex-1 overflow-auto">
-        <table className="w-full table-fixed border-collapse">
+        <table className="w-full table-auto border-collapse">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    style={header.getSize() !== 150 ? { width: header.getSize() } : undefined}
+                    style={header.getSize() !== 150 ? { minWidth: header.getSize(), width: header.getSize() } : undefined}
                     className="py-1.5 pr-2 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text)]"
                   >
                     {header.isPlaceholder ? null : (
@@ -149,7 +168,7 @@ export function DataTable<T>({
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={table.getVisibleLeafColumns().length}
                   className="py-12 text-center text-sm text-[var(--color-text-tertiary)]"
                 >
                   No results found.
@@ -167,7 +186,7 @@ export function DataTable<T>({
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="py-2 pr-2 align-middle text-sm text-[var(--color-text)]"
+                      className="truncate max-w-0 py-2 pr-2 align-middle text-sm text-[var(--color-text)]"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

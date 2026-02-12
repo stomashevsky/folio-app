@@ -50,13 +50,13 @@ export function StatusDonutChart({ data }: StatusDonutChartProps) {
               className="h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-xs text-[var(--color-text-secondary)]">
+            <span className="text-sm text-[var(--color-text-secondary)]">
               {entry.status}
             </span>
-            <span className="text-xs font-medium text-[var(--color-text)]">
+            <span className="text-sm font-medium text-[var(--color-text)]">
               {entry.count.toLocaleString()}
             </span>
-            <span className="text-xs text-[var(--color-text-tertiary)]">
+            <span className="text-sm text-[var(--color-text-tertiary)]">
               ({entry.percentage}%)
             </span>
           </div>
