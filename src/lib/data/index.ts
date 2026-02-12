@@ -4,7 +4,7 @@ export { mockReports } from "./mock-reports";
 export { mockAccounts } from "./mock-accounts";
 export { getEventsForInquiry } from "./mock-events";
 export { getSessionsForInquiry } from "./mock-sessions";
-export { getSignalsForInquiry, getBehavioralRiskForInquiry } from "./mock-signals";
+export { getSignalsForInquiry, getBehavioralRiskForInquiry, signalDescriptions } from "./mock-signals";
 export {
   mockAnalyticsOverview,
   mockInquiriesTimeSeries,

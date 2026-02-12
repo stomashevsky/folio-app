@@ -223,17 +223,33 @@ export interface TimelineEvent {
 export interface InquirySession {
   id: string;
   inquiryId: string;
-  deviceType: string; // "Mac desktop, Chrome"
-  deviceId: string; // dev_FuFC...
-  ipAddress: string;
-  networkThreatLevel: string; // "Low"
-  latitude: number;
-  longitude: number;
-  location: string; // "California"
-  country: string; // "United States of America"
+  // Timestamps
   createdAt: string;
   startedAt: string;
   expiredAt?: string;
+  // Network details
+  ipAddress: string;
+  networkThreatLevel: string; // "Low" | "Medium" | "High"
+  networkCountry: string;
+  networkRegion: string;
+  ipLatitude: number;
+  ipLongitude: number;
+  torConnection: boolean;
+  vpn: boolean;
+  publicProxy: boolean;
+  privateProxy: boolean;
+  isp: string;
+  ipConnectionType: string; // "residential" | "corporate" | "mobile"
+  httpReferer: string;
+  // Device details
+  deviceToken: string;
+  deviceHandoffMethod: string;
+  deviceType: string; // "desktop" | "mobile"
+  deviceOs: string;
+  browser: string;
+  browserFingerprint: string;
+  gpsLatitude: number;
+  gpsLongitude: number;
 }
 
 // ─── Inquiry Signal ───

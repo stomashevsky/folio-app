@@ -167,6 +167,46 @@ export function getSignalsForInquiry(inquiryId: string): InquirySignal[] {
   });
 }
 
+// ─── Signal Descriptions (for tooltips) ───
+
+export const signalDescriptions: Record<string, string> = {
+  // Featured
+  "Behavior Threat Level": "Predicted risk level based on combined behavioral signals",
+  "Geolocation To Residency Delta": "Distance between session location and residence address",
+  "Proxy Detected": "Whether a proxy or VPN server was detected",
+  "Rooted Device Detected": "Whether the device has been rooted or jailbroken",
+  "Sessions Geolocation Delta": "Distance between multiple session locations",
+  "Network Threat Level": "Predicted risk level based on network signals",
+  "User Agent Spoof Attempts": "Number of user agent headers that were likely spoofed",
+  // Network
+  "IP Count": "Number of unique IP addresses used during the session",
+  "ISP Count": "Number of unique internet service providers detected",
+  "Tor Detected": "Whether a Tor exit node was detected",
+  // Behavioral
+  "Apple App Attestation": "Apple device attestation verification result",
+  "Behavior Anomaly": "Degree of anomalous behavior detected during the session",
+  "Bot Score": "Likelihood score that the session was automated",
+  "Country Comparison": "Whether the session country matches the document country",
+  "Distraction Events": "Number of times user left the flow",
+  "Google Play Integrity": "Google Play Integrity verification result",
+  "Impossible Travel GPS": "Risk level based on impossible GPS location changes",
+  "Last Two Verifications Geolocation Delta": "Distance between last two verification locations",
+  "Off-hours Activity": "Whether the session occurred outside normal business hours",
+  "Selfie Liveness Risk Level": "Risk level for selfie liveness detection",
+  "Session Count": "Number of sessions created for this inquiry",
+  "Shortcut Copies": "Number of times user used keyboard shortcut to copy",
+  "Shortcut Pastes": "Number of times user used keyboard shortcut to paste",
+  "Time to Complete": "Time from start to finish of flow",
+  "Unrecognized Referer": "Whether the session came from an unrecognized source",
+  "Virtual Camera Risk Level": "Risk level for virtual camera detection",
+  // Device
+  "Browser Count": "Number of unique browsers used during the session",
+  "Incognito Browsing Detected": "Whether incognito or private browsing was detected",
+  "Locale": "Browser language locale detected",
+  "Request Spoof Attempts": "Number of requests that were likely spoofed",
+  "Timezone": "Timezone detected from the user's device",
+};
+
 export function getBehavioralRiskForInquiry(inquiryId: string): BehavioralRisk | null {
   const inquiry = mockInquiries.find((i) => i.id === inquiryId);
   if (!inquiry) return null;

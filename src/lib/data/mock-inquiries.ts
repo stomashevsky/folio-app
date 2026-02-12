@@ -26,7 +26,7 @@ export const mockInquiries: Inquiry[] = [
     timeToFinish: 375,
 
     verificationAttempts: { governmentId: 1, selfie: 1 },
-    tags: ["premium"],
+    tags: ["Premium"],
   },
   {
     id: "inq_3MnOpQrStUvWxYzAaBbCcDdEeFfGg",
@@ -52,7 +52,7 @@ export const mockInquiries: Inquiry[] = [
     timeToFinish: 500,
 
     verificationAttempts: { governmentId: 1, selfie: 1 },
-    tags: ["high-risk"],
+    tags: ["High-risk"],
   },
   {
     id: "inq_7VwXyZaAbBcCdDdEeFfGgHhIiJjKk",
@@ -90,7 +90,7 @@ export const mockInquiries: Inquiry[] = [
     timeToFinish: 405,
 
     verificationAttempts: { governmentId: 1, selfie: 1 },
-    tags: ["premium"],
+    tags: ["Premium"],
   },
   {
     id: "inq_4BcCdDdEeFfGgHhIiJjKkLlMmNnOo",
@@ -129,7 +129,7 @@ export const mockInquiries: Inquiry[] = [
     timeToFinish: 535,
 
     verificationAttempts: { governmentId: 1, selfie: 2 },
-    tags: ["eu-resident"],
+    tags: ["EU-resident"],
   },
   {
     id: "inq_1HhIiJjKkLlMmNnOoPpQqRrSsTtUu",
@@ -167,7 +167,7 @@ export const mockInquiries: Inquiry[] = [
     timeToFinish: 400,
 
     verificationAttempts: { governmentId: 1, selfie: 1 },
-    tags: ["premium"],
+    tags: ["Premium"],
   },
   {
     id: "inq_7NnOoPpQqRrSsTtUuVvWwXxYyZzAa",

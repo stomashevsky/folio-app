@@ -396,15 +396,15 @@ const templateWeights: [string, number][] = [
 const tagWeights: [string[], number][] = [
   [[], 50],
   [["premium"], 10],
-  [["high-risk"], 8],
+  [["High-risk"], 8],
   [["eu-resident"], 7],
   [["vip"], 5],
-  [["re-verification"], 5],
-  [["expedited"], 4],
-  [["manual-review"], 4],
-  [["api-created"], 3],
+  [["Re-verification"], 5],
+  [["Expedited"], 4],
+  [["Manual-review"], 4],
+  [["API-created"], 3],
   [["premium", "vip"], 2],
-  [["high-risk", "manual-review"], 2],
+  [["High-risk", "Manual-review"], 2],
 ];
 
 const refIdPrefixes = ["user_", "ext_", "cust_", "ref_"];
@@ -415,7 +415,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 0, name: "André Caçador de Araújo", region: "us",
     status: "approved", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["expedited"], createdAt: "2026-02-12T09:12:00.000Z",
+    tags: ["Expedited"], createdAt: "2026-02-12T09:12:00.000Z",
     completedAt: "2026-02-12T09:13:45.000Z", timeToFinish: 105,
     verificationAttempts: { governmentId: 1, selfie: 1 },
     birthdate: "1983-03-14", age: 42, address: "789 Pine Road, Denver, CO 80202, USA",
@@ -426,7 +426,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 1, name: "Maria Aldomar", region: "it",
     status: "approved", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["re-verification"], createdAt: "2026-02-12T08:05:00.000Z",
+    tags: ["Re-verification"], createdAt: "2026-02-12T08:05:00.000Z",
     completedAt: "2026-02-12T08:21:22.000Z", timeToFinish: 982,
     verificationAttempts: { governmentId: 2, selfie: 2 },
     birthdate: "2005-01-18", age: 21, address: "Via Montenapoleone 8, 20121 Milan, Italy",
@@ -437,7 +437,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 2, name: "Carmen Muestra", region: "ch",
     status: "declined", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["manual-review"], createdAt: "2026-02-11T22:30:00.000Z",
+    tags: ["Manual-review"], createdAt: "2026-02-11T22:30:00.000Z",
     completedAt: "2026-02-11T22:41:15.000Z", timeToFinish: 675,
     verificationAttempts: { governmentId: 2, selfie: 1 },
     birthdate: "1995-08-01", age: 30, address: "Bahnhofstrasse 40, 8001 Zürich, Switzerland",
@@ -456,7 +456,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 4, name: "Sofia Osman", region: "ae",
     status: "needs_review", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["high-risk"], referenceId: "ext_so_osman_2026",
+    tags: ["High-risk"], referenceId: "ext_so_osman_2026",
     createdAt: "2026-02-11T17:20:00.000Z",
     completedAt: "2026-02-11T17:27:10.000Z", timeToFinish: 430,
     verificationAttempts: { governmentId: 1, selfie: 1 },
@@ -465,7 +465,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 5, name: "Elena Wu", region: "cn",
     status: "needs_review", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["high-risk", "manual-review"], createdAt: "2026-02-11T15:10:00.000Z",
+    tags: ["High-risk", "Manual-review"], createdAt: "2026-02-11T15:10:00.000Z",
     completedAt: "2026-02-11T15:18:45.000Z", timeToFinish: 525,
     verificationAttempts: { governmentId: 1, selfie: 1 },
     birthdate: "1990-07-17", age: 35, address: "100 Nanjing East Rd, Huangpu, Shanghai 200002, China",
@@ -473,7 +473,7 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 6, name: "Tyler Brooks", region: "us",
     status: "pending", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["api-created"], referenceId: "user_tyler_90821",
+    tags: ["API-created"], referenceId: "user_tyler_90821",
     createdAt: "2026-02-11T14:00:00.000Z",
     verificationAttempts: { governmentId: 0, selfie: 0 },
     birthdate: "2001-12-05", age: 24, address: "500 Michigan Ave, Chicago, IL 60611, USA",
@@ -488,14 +488,14 @@ const edgeCases: (Omit<GeneratedPerson, "idNumber" | "issuingCountry" | "expirat
   {
     index: 8, name: "Valentina Reyes", region: "mx",
     status: "created", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["expedited"], createdAt: "2026-02-11T10:05:00.000Z",
+    tags: ["Expedited"], createdAt: "2026-02-11T10:05:00.000Z",
     verificationAttempts: { governmentId: 0, selfie: 0 },
     birthdate: "1996-08-30", age: 29, address: "Av. Reforma 222, Col. Juárez, 06600 Mexico City, Mexico",
   },
   {
     index: 9, name: "Marco Park", region: "au",
     status: "approved", templateName: "KYC + AML: GovID + Selfie",
-    tags: ["re-verification"], createdAt: "2026-02-11T08:50:00.000Z",
+    tags: ["Re-verification"], createdAt: "2026-02-11T08:50:00.000Z",
     completedAt: "2026-02-11T09:06:32.000Z", timeToFinish: 982,
     verificationAttempts: { governmentId: 3, selfie: 1 },
     birthdate: "1985-02-14", age: 41, address: "200 George Street, Sydney NSW 2000, Australia",
