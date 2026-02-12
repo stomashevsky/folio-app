@@ -2,7 +2,7 @@
 
 import { TopBar } from "@/components/layout/TopBar";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { NotFoundPage, InlineEmpty, EventTimeline, DocumentViewer } from "@/components/shared";
+import { NotFoundPage, InlineEmpty, EventTimeline, DocumentViewer, TagEditModal } from "@/components/shared";
 import {
   mockInquiries,
   mockVerifications,
@@ -10,29 +10,28 @@ import {
   getEventsForInquiry,
   getSessionsForInquiry,
   getSignalsForInquiry,
+  getBehavioralRiskForInquiry,
 } from "@/lib/data";
 import {
   formatDateTime,
   formatDuration,
   truncateId,
 } from "@/lib/utils/format";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
-import { Avatar } from "@plexui/ui/components/Avatar";
+import { useMemo, useRef, useState } from "react";
 import { Badge } from "@plexui/ui/components/Badge";
 import { Button } from "@plexui/ui/components/Button";
 import { Tabs } from "@plexui/ui/components/Tabs";
-import { CopyTooltip, Tooltip } from "@plexui/ui/components/Tooltip";
 import {
   CheckCircle,
   Copy,
   Globe,
   Desktop,
   MapPin,
-  Tag,
   Search,
 } from "@plexui/ui/components/Icon";
-import type { Check, DocumentViewerItem, InquirySignal, SignalCategory } from "@/lib/types";
+import type { BehavioralRisk, Check, DocumentViewerItem, InquirySignal, SignalCategory } from "@/lib/types";
 
 const tabs = [
   "Overview",
@@ -112,6 +111,33 @@ function MapEmbed({ latitude, longitude }: { latitude: number; longitude: number
   );
 }
 
+// ─── Copy Button ───
+
+function CopyButton({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="shrink-0 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
+    >
+      {copied ? (
+        <CheckCircle className="h-3.5 w-3.5 text-[var(--color-background-success-solid)]" />
+      ) : (
+        <Copy className="h-3.5 w-3.5" />
+      )}
+    </button>
+  );
+}
+
 // ─── Info Row ───
 
 function InfoRow({
@@ -128,15 +154,7 @@ function InfoRow({
       <div className="text-xs text-[var(--color-text-tertiary)]">{label}</div>
       <div className="mt-0.5 flex items-center gap-1.5 text-sm text-[var(--color-text)]">
         <span className="min-w-0 break-all">{children}</span>
-        {copyValue && (
-          <CopyTooltip copyValue={copyValue}>
-            <Tooltip.TriggerDecorator>
-              <button className="shrink-0 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]">
-                <Copy className="h-3.5 w-3.5" />
-              </button>
-            </Tooltip.TriggerDecorator>
-          </CopyTooltip>
-        )}
+        {copyValue && <CopyButton value={copyValue} />}
       </div>
     </div>
   );
@@ -242,6 +260,16 @@ export default function InquiryDetailPage() {
   const [checksSearch, setChecksSearch] = useState("");
 
   const inquiry = mockInquiries.find((i) => i.id === params.id);
+  const [tags, setTags] = useState<string[]>(() => inquiry?.tags ?? []);
+  const [tagModalOpen, setTagModalOpen] = useState(false);
+  const allKnownTags = useMemo(
+    () =>
+      Array.from(new Set(mockInquiries.flatMap((i) => i.tags)))
+        .filter(Boolean)
+        .sort(),
+    [],
+  );
+
   const verifications = mockVerifications.filter(
     (v) => v.inquiryId === inquiry?.id
   );
@@ -260,6 +288,7 @@ export default function InquiryDetailPage() {
   const events = getEventsForInquiry(inquiry.id);
   const sessions = getSessionsForInquiry(inquiry.id);
   const signals = getSignalsForInquiry(inquiry.id);
+  const behavioralRisk = getBehavioralRiskForInquiry(inquiry.id);
 
   const featuredSignals = signals.filter((s) => s.category === "featured");
   const flaggedCount = featuredSignals.filter((s) => s.flagged).length;
@@ -268,7 +297,7 @@ export default function InquiryDetailPage() {
     <div className="flex h-full flex-col">
       {/* Header */}
       <TopBar
-        title="Inquiry details"
+        title="Inquiry"
         backHref="/inquiries"
         actions={
           <div className="flex items-center gap-2">
@@ -312,6 +341,7 @@ export default function InquiryDetailPage() {
                 sessions={sessions}
                 signals={featuredSignals}
                 flaggedCount={flaggedCount}
+                behavioralRisk={behavioralRisk}
               />
             )}
             {activeTab === "Verifications" && (
@@ -342,13 +372,15 @@ export default function InquiryDetailPage() {
                 )}
               </InfoRow>
               <InfoRow label="Account ID" copyValue={inquiry.accountId}>
-                <span className="text-sm text-[var(--color-primary-solid-bg)]">
+                <Link
+                  href={`/accounts/${inquiry.accountId}`}
+                  className="text-sm text-[var(--color-primary-solid-bg)] hover:underline"
+                >
                   {inquiry.accountId}
-                </span>
+                </Link>
               </InfoRow>
               <InfoRow label="Created At">
-                {formatDateTime(inquiry.createdAt)} UTC by{" "}
-                {inquiry.accountName}
+                {formatDateTime(inquiry.createdAt)} UTC
               </InfoRow>
               <InfoRow label="Template">
                 <span className="text-sm text-[var(--color-primary-solid-bg)]">
@@ -356,8 +388,15 @@ export default function InquiryDetailPage() {
                 </span>
               </InfoRow>
               <InfoRow label="Status">
-                <div className="flex items-center gap-2">
-                  <StatusBadge status={inquiry.status} />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={inquiry.status} />
+                  </div>
+                  {inquiry.status !== "created" && inquiry.status !== "pending" && (
+                    <p className="mt-1 text-xs text-[var(--color-text-tertiary)]">
+                      by Workflow: {inquiry.templateName}
+                    </p>
+                  )}
                 </div>
               </InfoRow>
               <InfoRow label="Notes">
@@ -368,32 +407,26 @@ export default function InquiryDetailPage() {
 
           {/* Tags */}
           <div className="border-t border-[var(--color-border)] px-5 py-4">
-            <h3 className="heading-sm text-[var(--color-text)]">Tags</h3>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {inquiry.tags.length > 0 ? (
-                inquiry.tags.map((tag) => (
+            <div className="flex items-center justify-between">
+              <h3 className="heading-sm text-[var(--color-text)]">Tags</h3>
+              <Button
+                color="secondary"
+                variant="ghost"
+                size="sm"
+                onClick={() => setTagModalOpen(true)}
+              >
+                {tags.length > 0 ? "Edit" : "Add"}
+              </Button>
+            </div>
+            {tags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {tags.map((tag) => (
                   <Badge key={tag} color="secondary" size="sm">
                     {tag}
                   </Badge>
-                ))
-              ) : (
-                <button className="flex items-center gap-1 text-sm text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]">
-                  <Tag className="h-3.5 w-3.5" />
-                  Add tag
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Cases */}
-          <div className="border-t border-[var(--color-border)] px-5 py-4">
-            <div className="flex items-center gap-2">
-              <h3 className="heading-sm text-[var(--color-text)]">Cases</h3>
-              <span className="text-xs text-[var(--color-text-tertiary)]">0</span>
-            </div>
-            <p className="mt-2 text-xs text-[var(--color-text-tertiary)]">
-              There are no cases associated with this inquiry.
-            </p>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Event Timeline */}
@@ -413,11 +446,89 @@ export default function InquiryDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Tag Edit Modal */}
+      <TagEditModal
+        open={tagModalOpen}
+        onOpenChange={setTagModalOpen}
+        tags={tags}
+        onSave={setTags}
+        allTags={allKnownTags}
+      />
     </div>
   );
 }
 
 // ─── Tab Components ───
+
+// ─── Behavioral Risk Metric ───
+
+function RiskMetric({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="min-w-0">
+      <div className="text-xs text-[var(--color-text-tertiary)]">{label}</div>
+      <div className="mt-1 text-sm text-[var(--color-text)]">{value}</div>
+    </div>
+  );
+}
+
+function ThreatBadge({ level }: { level: string }) {
+  const color = level === "low" ? "success" : level === "medium" ? "warning" : "danger";
+  return (
+    <Badge color={color} size="sm">
+      {level.toUpperCase()}
+    </Badge>
+  );
+}
+
+function BehavioralRiskSignals({ risk }: { risk: BehavioralRisk }) {
+  const mins = Math.floor(risk.completionTime / 60);
+  const secs = risk.completionTime % 60;
+  const completionStr = `${mins}m ${secs}s`;
+
+  return (
+    <div>
+      <h2 className="heading-sm mb-3 text-[var(--color-text)]">Behavioral risk signals</h2>
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        {/* Overall risk scores */}
+        <h3 className="heading-xs text-[var(--color-text)]">Overall risk scores</h3>
+        <div className="mt-3 grid grid-cols-2 gap-6">
+          <RiskMetric label="Behavior threat level" value={<ThreatBadge level={risk.behaviorThreatLevel} />} />
+          <RiskMetric label="Bot score" value={risk.botScore} />
+        </div>
+
+        {/* Spoof attempts */}
+        <h3 className="heading-xs mt-6 text-[var(--color-text)]">Spoof attempts</h3>
+        <div className="mt-3 grid grid-cols-3 gap-6">
+          <RiskMetric label="Request spoof attempts" value={risk.requestSpoofAttempts} />
+          <RiskMetric label="User agent spoof attempts" value={risk.userAgentSpoofAttempts} />
+          <RiskMetric label="Number of requests from restricted mobile SDK versions" value={risk.mobileSdkRestricted} />
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-6">
+          <RiskMetric label="Number of requests from restricted API versions" value={risk.apiVersionRestricted} />
+        </div>
+
+        {/* User behavior */}
+        <h3 className="heading-xs mt-6 text-[var(--color-text)]">User behavior</h3>
+        <div className="mt-3 grid grid-cols-3 gap-6">
+          <RiskMetric label="User completion time" value={completionStr} />
+          <RiskMetric label="Distraction events" value={risk.distractionEvents} />
+          <RiskMetric label="Hesitation percentage" value={`${risk.hesitationPercent}%`} />
+        </div>
+
+        {/* Form filling */}
+        <h3 className="heading-xs mt-6 text-[var(--color-text)]">Form filling</h3>
+        <div className="mt-3 grid grid-cols-3 gap-6">
+          <RiskMetric label="Shortcut usage (copies)" value={risk.shortcutCopies} />
+          <RiskMetric label="Shortcut usage (pastes)" value={risk.pastes} />
+          <RiskMetric label="Autofill starts" value={risk.autofillStarts} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Overview Tab ───
 
 function OverviewTab({
   inquiry,
@@ -425,12 +536,14 @@ function OverviewTab({
   sessions,
   signals,
   flaggedCount,
+  behavioralRisk,
 }: {
   inquiry: (typeof mockInquiries)[0];
   verifications: typeof mockVerifications;
   sessions: ReturnType<typeof getSessionsForInquiry>;
   signals: InquirySignal[];
   flaggedCount: number;
+  behavioralRisk: BehavioralRisk | null;
 }) {
   // Collect photos from verifications with extraction data
   const govIdVer = verifications.find((v) => v.type === "government_id");
@@ -608,6 +721,9 @@ function OverviewTab({
           />
         </div>
       )}
+
+      {/* Behavioral risk signals */}
+      {behavioralRisk && <BehavioralRiskSignals risk={behavioralRisk} />}
     </div>
   );
 }

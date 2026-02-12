@@ -146,6 +146,8 @@ export interface BehavioralRisk {
   shortcutCopies: number;
   pastes: number;
   autofillStarts: number;
+  mobileSdkRestricted: number;
+  apiVersionRestricted: number;
 }
 
 // ─── Analytics ───
