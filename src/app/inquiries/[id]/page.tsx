@@ -174,16 +174,20 @@ function CopyButton({ value }: { value: string }) {
   };
 
   return (
-    <button
+    <Button
+      color="secondary"
+      variant="ghost"
+      size="sm"
+      uniform
+      pill={false}
       onClick={handleCopy}
-      className="shrink-0 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]"
     >
       {copied ? (
-        <CheckCircle className="h-3.5 w-3.5 text-[var(--color-background-success-solid)]" />
+        <CheckCircle className="h-4 w-4 text-[var(--color-background-success-solid)]" />
       ) : (
-        <Copy className="h-3.5 w-3.5" />
+        <Copy className="h-4 w-4" />
       )}
-    </button>
+    </Button>
   );
 }
 
