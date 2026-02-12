@@ -7,3 +7,4 @@ export { InlineEmpty } from "./InlineEmpty";
 export { EventTimeline } from "./EventTimeline";
 export { DocumentViewer } from "./DocumentViewer";
 export { ColumnSettings } from "./ColumnSettings";
+export { TagEditModal } from "./TagEditModal";

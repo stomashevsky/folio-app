@@ -42,6 +42,7 @@ const settingsNavGroups: NavGroup[] = [
     items: [
       { title: "General", href: "/settings/project" },
       { title: "Notifications", href: "/settings/notifications" },
+      { title: "Tags", href: "/settings/tags" },
     ],
   },
 ];
