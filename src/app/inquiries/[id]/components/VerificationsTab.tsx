@@ -92,7 +92,7 @@ function VerificationCard({
 
       {/* Checks */}
       <div>
-        <div className="flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-4 py-2">
+        <div className="flex items-center gap-2 border-y border-[var(--color-border)] bg-[var(--color-surface-secondary)] px-4 py-2">
           <span className="heading-xs text-[var(--color-text)]">Checks</span>
           <div className="relative ml-auto">
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
