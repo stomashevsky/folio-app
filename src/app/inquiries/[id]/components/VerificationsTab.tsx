@@ -82,6 +82,7 @@ function VerificationCard({
       {/* Extracted data */}
       {v.extractedData && Object.keys(v.extractedData).length > 0 && (
         <KeyValueTable
+          bare
           rows={Object.entries(v.extractedData).map(([key, val]) => ({
             label: key,
             value: val,

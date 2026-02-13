@@ -19,6 +19,8 @@ interface KeyValueTableProps {
   title?: string;
   /** Label column width class (default: "w-2/5") */
   labelWidth?: string;
+  /** When true, skip outer border/rounded wrapper (use inside a parent card) */
+  bare?: boolean;
 }
 
 export type { KeyValueRow, KeyValueSection };
@@ -72,9 +74,10 @@ export function KeyValueTable({
   sections,
   title,
   labelWidth = "w-2/5",
+  bare = false,
 }: KeyValueTableProps) {
-  return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+  const content = (
+    <>
       {title && (
         <div className="border-b border-[var(--color-border)] px-4 py-3">
           <span className="heading-xs text-[var(--color-text)]">{title}</span>
@@ -94,6 +97,14 @@ export function KeyValueTable({
           ))}
         </tbody>
       </table>
+    </>
+  );
+
+  if (bare) return content;
+
+  return (
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      {content}
     </div>
   );
 }

@@ -70,6 +70,7 @@ export function SessionsTab({
 
             {/* Network + Device details */}
             <KeyValueTable
+              bare
               sections={[
                 {
                   title: "Network details",
