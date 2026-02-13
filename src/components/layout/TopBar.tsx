@@ -54,7 +54,7 @@ export function TopBar({ title, description, actions, toolbar, tabs, backHref }:
       </div>
 
       {/* Row 2: tabs — tight spacing, tab underline replaces header border */}
-      {hasTabs && <div className="mt-1">{tabs}</div>}
+      {hasTabs && <div className="mt-1 translate-y-px">{tabs}</div>}
 
       {/* Row 2: toolbar (filters only) */}
       {hasToolbar && (

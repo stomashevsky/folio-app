@@ -121,10 +121,10 @@ function InquiryAnalyticsContent() {
             variant="underline"
             flush
             aria-label="Analytics views"
-            size="md"
+            size="lg"
           >
             <Tabs.Tab value="Overview">Overview</Tabs.Tab>
-            <Tabs.Tab value="Funnel">Funnel</Tabs.Tab>
+            <Tabs.Tab value="Funnel">Conversion Funnel</Tabs.Tab>
           </Tabs>
         }
       />
@@ -140,6 +140,7 @@ function InquiryAnalyticsContent() {
                     key={metric.label}
                     label={metric.label}
                     value={metric.value}
+                    description={metric.description}
                     tooltip={metric.tooltip}
                     variant="compact"
                   />
@@ -194,6 +195,7 @@ function InquiryAnalyticsContent() {
                     key={metric.label}
                     label={metric.label}
                     value={metric.value}
+                    description={metric.description}
                     tooltip={metric.tooltip}
                     variant="compact"
                   />

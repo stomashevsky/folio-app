@@ -37,6 +37,9 @@ export function MetricCard({
           )}
         </div>
         <p className="mt-1.5 heading-md text-[var(--color-text)]">{value}</p>
+        {description && (
+          <p className="mt-0.5 text-xs text-[var(--color-text-tertiary)]">{description}</p>
+        )}
       </div>
     );
   }

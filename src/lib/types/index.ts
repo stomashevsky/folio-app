@@ -215,6 +215,7 @@ export interface RateTimeSeriesPoint {
 export interface HighlightMetric {
   label: string;
   value: string;
+  description?: string;
   tooltip?: string;
 }
 
