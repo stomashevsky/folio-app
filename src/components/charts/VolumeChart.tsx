@@ -83,6 +83,7 @@ export function VolumeChart({
                 fontSize: "13px",
                 color: "var(--color-text)",
               }}
+              itemStyle={{ color: "var(--color-text)" }}
               labelFormatter={(label: string) => {
                 const d = new Date(label);
                 return d.toLocaleDateString("en-US", {
