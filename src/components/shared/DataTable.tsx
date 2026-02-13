@@ -160,11 +160,11 @@ export function DataTable<T>({
                         {header.column.getCanSort() && (
                           <span className="ml-1">
                             {header.column.getIsSorted() === "asc" ? (
-                              <ArrowUpSm style={{ width: 12, height: 12 }} />
+                              <ArrowUpSm style={{ width: 14, height: 14 }} />
                             ) : header.column.getIsSorted() === "desc" ? (
-                              <ArrowDownSm style={{ width: 12, height: 12 }} />
+                              <ArrowDownSm style={{ width: 14, height: 14 }} />
                             ) : (
-                              <Sort style={{ width: 12, height: 12 }} className="opacity-40" />
+                              <Sort style={{ width: 14, height: 14 }} className="opacity-40" />
                             )}
                           </span>
                         )}
