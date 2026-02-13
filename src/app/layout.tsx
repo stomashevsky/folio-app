@@ -40,7 +40,7 @@ export default function RootLayout({
               <Navbar />
               <SidebarLayout className="flex-1 overflow-hidden">
                 <SidebarSwitch />
-                <SidebarInset>
+                <SidebarInset className="max-md:!mt-0">
                   <MobileMenuOverlay>{children}</MobileMenuOverlay>
                 </SidebarInset>
               </SidebarLayout>

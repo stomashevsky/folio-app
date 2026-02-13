@@ -38,7 +38,7 @@ export function Navbar() {
   const router = useRouter();
 
   return (
-    <header className="grid h-[var(--navbar-height)] shrink-0 grid-cols-[1fr_auto_1fr] items-center bg-[var(--color-surface-tertiary)] px-4">
+    <header className="flex h-[var(--navbar-height)] shrink-0 items-center justify-between bg-[var(--color-surface-tertiary)] px-2 md:grid md:grid-cols-[1fr_auto_1fr] md:px-4">
       {/* Left: Org button */}
       <div className="flex items-center">
         <Link
@@ -68,27 +68,29 @@ export function Navbar() {
       </nav>
 
       {/* Right: Avatar (desktop) | Menu button (mobile) */}
-      <div className="flex items-center justify-end gap-1">
-        <Menu>
-          <Menu.Trigger asChild>
-            <button type="button" className="hidden cursor-pointer md:block">
-              <Avatar name={MOCK_USER.name} size={28} color={MOCK_USER.avatarColor} variant="solid" />
-            </button>
-          </Menu.Trigger>
-          <Menu.Content align="end" sideOffset={8} minWidth={220}>
-            <div className="px-3 py-2">
-              <p className="text-sm font-medium text-[var(--color-text)]">{MOCK_USER.name}</p>
-              <p className="text-xs text-[var(--color-text-secondary)]">{MOCK_USER.email}</p>
-            </div>
-            <div className="px-3 pb-2">
-              <ThemeSwitcher />
-            </div>
-            <Menu.Separator />
-            <Menu.Item onSelect={() => router.push("/settings")}>Your profile</Menu.Item>
-            <Menu.Separator />
-            <Menu.Item onSelect={() => {}}>Log out</Menu.Item>
-          </Menu.Content>
-        </Menu>
+      <div className="flex items-center justify-end">
+        <div className="hidden md:block">
+          <Menu>
+            <Menu.Trigger asChild>
+              <button type="button" className="cursor-pointer">
+                <Avatar name={MOCK_USER.name} size={28} color={MOCK_USER.avatarColor} variant="solid" />
+              </button>
+            </Menu.Trigger>
+            <Menu.Content align="end" sideOffset={8} minWidth={220}>
+              <div className="px-3 py-2">
+                <p className="text-sm font-medium text-[var(--color-text)]">{MOCK_USER.name}</p>
+                <p className="text-xs text-[var(--color-text-secondary)]">{MOCK_USER.email}</p>
+              </div>
+              <div className="px-3 pb-2">
+                <ThemeSwitcher />
+              </div>
+              <Menu.Separator />
+              <Menu.Item onSelect={() => router.push("/settings")}>Your profile</Menu.Item>
+              <Menu.Separator />
+              <Menu.Item onSelect={() => {}}>Log out</Menu.Item>
+            </Menu.Content>
+          </Menu>
+        </div>
 
         {/* Mobile: hamburger / X button */}
         <div className="md:hidden">
