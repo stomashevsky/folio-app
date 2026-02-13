@@ -68,7 +68,8 @@ export default function VerificationsPage() {
           columns={columns}
           globalFilter={search}
           onRowClick={(row) => router.push(`/verifications/${row.id}`)}
-          pageSize={10}
+          pageSize={50}
+          initialSorting={[{ id: "createdAt", desc: true }]}
           mobileColumnVisibility={{
             id: false,
             inquiryId: false,

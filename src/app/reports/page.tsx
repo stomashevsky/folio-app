@@ -85,7 +85,8 @@ export default function ReportsPage() {
           columns={columns}
           globalFilter={search}
           onRowClick={(row) => router.push(`/reports/${row.id}`)}
-          pageSize={10}
+          pageSize={50}
+          initialSorting={[{ id: "createdAt", desc: true }]}
           mobileColumnVisibility={{
             id: false,
             createdAt: false,

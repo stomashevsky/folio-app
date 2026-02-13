@@ -70,7 +70,8 @@ export default function AccountsPage() {
           columns={columns}
           globalFilter={search}
           onRowClick={(row) => router.push(`/accounts/${row.id}`)}
-          pageSize={10}
+          pageSize={50}
+          initialSorting={[{ id: "createdAt", desc: true }]}
           mobileColumnVisibility={{
             id: false,
             createdAt: false,

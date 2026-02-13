@@ -86,7 +86,7 @@ export function DataTable<T>({
   columns,
   globalFilter: externalFilter = "",
   onRowClick,
-  pageSize = 10,
+  pageSize = 50,
   initialSorting = [],
   columnVisibility,
   onColumnVisibilityChange,
