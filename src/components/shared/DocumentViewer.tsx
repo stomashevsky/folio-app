@@ -13,6 +13,7 @@ import {
   Minus,
   Plus,
 } from "@plexui/ui/components/Icon";
+import { toTitleCase } from "@/lib/utils/format";
 import type { DocumentViewerItem } from "@/lib/types";
 
 const ZOOM_STEPS = [25, 50, 75, 100, 125, 150, 200];
@@ -224,7 +225,11 @@ export function DocumentViewer({
                 {Object.entries(item.extractedData!).map(([key, value]) => (
                   <div key={key} className="px-4 py-3">
                     <div className="text-xs text-white/40">{key}</div>
-                    <div className="mt-0.5 text-sm text-white">{value}</div>
+                    <div className="mt-0.5 text-sm text-white">
+                      {(key === "Full name" || key === "Address") && typeof value === "string"
+                        ? toTitleCase(value)
+                        : value}
+                    </div>
                   </div>
                 ))}
               </div>

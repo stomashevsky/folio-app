@@ -84,3 +84,21 @@ export function getRoleBadgeColor(role: string): string {
 export function getActiveBadgeColor(active: boolean): string {
   return active ? "success" : "secondary";
 }
+
+const TITLE_CASE_LOWER_WORDS = new Set([
+  "de", "da", "di", "do", "dos", "das", "del", "von", "van", "le", "la", "el",
+]);
+
+/** Convert ALL CAPS or mixed text to Title Case. Keeps particles (de, von, van…) lowercase. */
+export function toTitleCase(str: string): string {
+  if (!str) return str;
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word, i) =>
+      i > 0 && TITLE_CASE_LOWER_WORDS.has(word)
+        ? word
+        : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+}

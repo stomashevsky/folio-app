@@ -10,6 +10,7 @@ import {
   KeyValueTable,
 } from "@/components/shared";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { toTitleCase } from "@/lib/utils/format";
 import type { DocumentViewerItem } from "@/lib/types";
 import type { mockVerifications } from "@/lib/data";
 import { CheckRow } from "./CheckRow";
@@ -85,7 +86,10 @@ function VerificationCard({
           bare
           rows={Object.entries(v.extractedData).map(([key, val]) => ({
             label: key,
-            value: val,
+            value:
+              (key === "Full name" || key === "Address") && typeof val === "string"
+                ? toTitleCase(val)
+                : val,
           }))}
         />
       )}
