@@ -13,6 +13,8 @@ import { Button } from "@plexui/ui/components/Button";
 import { Select } from "@plexui/ui/components/Select";
 import { Plus } from "@plexui/ui/components/Icon";
 import { TEMPLATE_STATUS_OPTIONS } from "@/lib/constants/filter-options";
+import { INQUIRY_TEMPLATE_PRESETS } from "@/lib/constants/template-presets";
+import { TemplatePickerModal } from "@/components/shared";
 import {
   INQUIRY_TEMPLATE_COLUMN_CONFIG,
   INQUIRY_TEMPLATE_DEFAULT_VISIBILITY,
@@ -73,6 +75,7 @@ export default function InquiryTemplatesPage() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>(DEFAULT_VISIBILITY);
 
@@ -108,7 +111,7 @@ export default function InquiryTemplatesPage() {
               color="primary"
               size="md"
               pill={false}
-              onClick={() => router.push("/templates/inquiries/new")}
+              onClick={() => setPickerOpen(true)}
             >
               <Plus />
               <span className="hidden md:inline">Create Template</span>
@@ -120,7 +123,7 @@ export default function InquiryTemplatesPage() {
             <TableSearch
               value={search}
               onChange={setSearch}
-              placeholder="Search by template ID or name..."
+              placeholder="Search templates..."
             />
 
             <div className="w-36">
@@ -172,6 +175,14 @@ export default function InquiryTemplatesPage() {
           }}
         />
       </div>
+
+      <TemplatePickerModal
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Create inquiry template"
+        presets={INQUIRY_TEMPLATE_PRESETS}
+        onSelect={(presetId) => router.push(`/templates/inquiries/new?preset=${presetId}`)}
+      />
     </div>
   );
 }

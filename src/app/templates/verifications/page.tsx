@@ -17,6 +17,8 @@ import {
   TEMPLATE_STATUS_OPTIONS,
   VERIFICATION_TYPE_OPTIONS,
 } from "@/lib/constants/filter-options";
+import { VERIFICATION_TEMPLATE_PRESETS } from "@/lib/constants/template-presets";
+import { TemplatePickerModal } from "@/components/shared";
 import {
   VERIFICATION_TEMPLATE_COLUMN_CONFIG,
   VERIFICATION_TEMPLATE_DEFAULT_VISIBILITY,
@@ -79,6 +81,7 @@ export default function VerificationTemplatesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>(DEFAULT_VISIBILITY);
 
@@ -116,7 +119,7 @@ export default function VerificationTemplatesPage() {
               color="primary"
               size="md"
               pill={false}
-              onClick={() => router.push("/templates/verifications/new")}
+              onClick={() => setPickerOpen(true)}
             >
               <Plus />
               <span className="hidden md:inline">Create Template</span>
@@ -128,7 +131,7 @@ export default function VerificationTemplatesPage() {
             <TableSearch
               value={search}
               onChange={setSearch}
-              placeholder="Search by template ID or name..."
+              placeholder="Search templates..."
             />
 
             <div className="w-36">
@@ -195,6 +198,14 @@ export default function VerificationTemplatesPage() {
           }}
         />
       </div>
+
+      <TemplatePickerModal
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Create verification template"
+        presets={VERIFICATION_TEMPLATE_PRESETS}
+        onSelect={(presetId) => router.push(`/templates/verifications/new?preset=${presetId}`)}
+      />
     </div>
   );
 }

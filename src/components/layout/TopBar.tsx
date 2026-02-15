@@ -2,7 +2,7 @@ import { ButtonLink } from "@plexui/ui/components/Button";
 import { ChevronLeftLg } from "@plexui/ui/components/Icon";
 
 interface TopBarProps {
-  title: string;
+  title: React.ReactNode;
   description?: string;
   actions?: React.ReactNode;
   toolbar?: React.ReactNode;

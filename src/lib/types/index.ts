@@ -131,9 +131,17 @@ export interface Account {
 
 export type TemplateStatus = "active" | "draft" | "archived" | "disabled";
 
+export type StepPassAction = "continue" | "approve" | "skip_next";
+export type StepFailAction = "decline" | "needs_review" | "skip" | "continue";
+export type StepRetryAction = "retry" | "decline" | "needs_review";
+
 export interface InquiryTemplateStep {
   verificationType: VerificationType;
   required: boolean;
+  onPass: StepPassAction;
+  onFail: StepFailAction;
+  onRetry: StepRetryAction;
+  maxRetries: number;
 }
 
 export interface InquiryTemplate {
@@ -146,9 +154,7 @@ export interface InquiryTemplate {
   updatedAt: string;
   steps: InquiryTemplateStep[];
   settings: {
-    autoApprove: boolean;
     expiresInDays: number;
-    maxRetries: number;
     redirectUrl?: string;
   };
 }

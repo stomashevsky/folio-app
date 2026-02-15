@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { TopBar } from "@/components/layout/TopBar";
 import { NotFoundPage, SectionHeading } from "@/components/shared";
 import { REPORT_TYPE_LABELS } from "@/lib/constants/report-type-labels";
+import { REPORT_TEMPLATE_PRESETS } from "@/lib/constants/template-presets";
 import { useTemplateStore } from "@/lib/stores/template-store";
 import { getStatusColor } from "@/lib/utils/format";
 import type { ReportTemplate, ReportType, TemplateStatus } from "@/lib/types";
@@ -15,9 +16,11 @@ import { Button } from "@plexui/ui/components/Button";
 import { Checkbox } from "@plexui/ui/components/Checkbox";
 import { Field } from "@plexui/ui/components/Field";
 import { Input } from "@plexui/ui/components/Input";
+import { Menu } from "@plexui/ui/components/Menu";
 import { Select } from "@plexui/ui/components/Select";
 import { Slider } from "@plexui/ui/components/Slider";
 import { Switch } from "@plexui/ui/components/Switch";
+import { ChevronDownSm } from "@plexui/ui/components/Icon";
 
 const REPORT_TYPE_OPTIONS = Object.entries(REPORT_TYPE_LABELS).map(([value, label]) => ({ value, label }));
 
@@ -48,6 +51,18 @@ const DEFAULT_FORM: ReportForm = {
   settings: { matchThreshold: 80, continuousMonitoring: false, monitoringFrequencyDays: 30, enableFuzzyMatch: true },
 };
 
+function buildFormFromPreset(presetParam: string): ReportForm {
+  const preset = REPORT_TEMPLATE_PRESETS.find((p) => p.id === presetParam);
+  if (!preset) return DEFAULT_FORM;
+  return {
+    name: preset.defaults.name,
+    type: preset.defaults.type,
+    status: "draft",
+    screeningSources: preset.defaults.screeningSources,
+    settings: { ...preset.defaults.settings },
+  };
+}
+
 function toForm(t: ReportTemplate): ReportForm {
   return {
     name: t.name,
@@ -65,13 +80,19 @@ function toForm(t: ReportTemplate): ReportForm {
 
 export default function ReportTemplateDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { reportTemplates } = useTemplateStore();
 
   const isNew = id === "new";
   const existing = isNew ? undefined : reportTemplates.getById(id);
+  const presetId = isNew ? searchParams.get("preset") : null;
 
-  const [form, setForm] = useState<ReportForm>(() => (existing ? toForm(existing) : DEFAULT_FORM));
+  const [form, setForm] = useState<ReportForm>(() => {
+    if (existing) return toForm(existing);
+    if (presetId) return buildFormFromPreset(presetId);
+    return DEFAULT_FORM;
+  });
   const [prevId, setPrevId] = useState(id);
   if (prevId !== id) {
     setPrevId(id);
@@ -119,6 +140,12 @@ export default function ReportTemplateDetailPage() {
     router.push("/templates/reports");
   }
 
+  function handleDelete() {
+    if (!existing) return;
+    reportTemplates.delete(id);
+    router.push("/templates/reports");
+  }
+
   const sourceOptions = SCREENING_SOURCES[form.type];
   const title = isNew ? "New report template" : (existing?.name ?? "Report template");
   const canPublish = form.status === "draft";
@@ -127,20 +154,28 @@ export default function ReportTemplateDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-auto">
       <TopBar
-        title={title}
+        title={<span className="flex items-center gap-2">{title}{!isNew && <Badge color={getStatusColor(form.status) as "warning" | "success" | "secondary"} size="sm">{form.status}</Badge>}</span>}
         backHref="/templates/reports"
         actions={
           <div className="flex items-center gap-2">
             {!isNew && (
-              <Badge color={getStatusColor(form.status) as "warning" | "success" | "secondary"} size="sm">
-                {form.status}
-              </Badge>
-            )}
-            {canPublish && (
-              <Button color="secondary" variant="outline" size="sm" pill={false} onClick={() => setStatus("active")}>Publish</Button>
-            )}
-            {canArchive && (
-              <Button color="secondary" variant="outline" size="sm" pill={false} onClick={() => setStatus("archived")}>Archive</Button>
+              <Menu>
+                <Menu.Trigger>
+                  <Button color="secondary" variant="outline" size="sm" pill={false}>
+                    More actions <ChevronDownSm />
+                  </Button>
+                </Menu.Trigger>
+                <Menu.Content>
+                  {canPublish && (
+                    <Menu.Item onClick={() => setStatus("active")}>Publish</Menu.Item>
+                  )}
+                  {canArchive && (
+                    <Menu.Item onClick={() => setStatus("archived")}>Archive</Menu.Item>
+                  )}
+                  <Menu.Separator />
+                  <Menu.Item onClick={handleDelete}>Delete</Menu.Item>
+                </Menu.Content>
+              </Menu>
             )}
             <Button color="primary" size="sm" pill={false} onClick={save}>Save</Button>
           </div>
@@ -156,7 +191,7 @@ export default function ReportTemplateDetailPage() {
         </div>
         <div className="mb-8">
           <Field label="Type" description="The category of screening this report performs">
-            <div className="w-48">
+            <div className="w-64">
               <Select
                 options={REPORT_TYPE_OPTIONS}
                 value={form.type}

@@ -14,6 +14,8 @@ import { Select } from "@plexui/ui/components/Select";
 import { Plus } from "@plexui/ui/components/Icon";
 import { REPORT_TYPE_LABELS } from "@/lib/constants/report-type-labels";
 import { TEMPLATE_STATUS_OPTIONS } from "@/lib/constants/filter-options";
+import { REPORT_TEMPLATE_PRESETS } from "@/lib/constants/template-presets";
+import { TemplatePickerModal } from "@/components/shared";
 import {
   REPORT_TEMPLATE_COLUMN_CONFIG,
   REPORT_TEMPLATE_DEFAULT_VISIBILITY,
@@ -75,6 +77,7 @@ export default function ReportTemplatesPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const [typeFilter, setTypeFilter] = useState<string[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>(DEFAULT_VISIBILITY);
 
@@ -112,7 +115,7 @@ export default function ReportTemplatesPage() {
               color="primary"
               size="md"
               pill={false}
-              onClick={() => router.push("/templates/reports/new")}
+              onClick={() => setPickerOpen(true)}
             >
               <Plus />
               <span className="hidden md:inline">Create Template</span>
@@ -124,7 +127,7 @@ export default function ReportTemplatesPage() {
             <TableSearch
               value={search}
               onChange={setSearch}
-              placeholder="Search by template ID or name..."
+              placeholder="Search templates..."
             />
 
             <div className="w-36">
@@ -190,6 +193,14 @@ export default function ReportTemplatesPage() {
           }}
         />
       </div>
+
+      <TemplatePickerModal
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Create report template"
+        presets={REPORT_TEMPLATE_PRESETS}
+        onSelect={(presetId) => router.push(`/templates/reports/new?preset=${presetId}`)}
+      />
     </div>
   );
 }
