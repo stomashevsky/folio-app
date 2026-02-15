@@ -18,8 +18,7 @@ import {
   getEventsForAccount,
 } from "@/lib/data";
 import { useTabParam } from "@/lib/hooks/useTabParam";
-import { formatDateTime, formatDate } from "@/lib/utils/format";
-import { Avatar } from "@plexui/ui/components/Avatar";
+import { formatDateTime } from "@/lib/utils/format";
 import { Badge } from "@plexui/ui/components/Badge";
 import { Button } from "@plexui/ui/components/Button";
 import { DotsHorizontal, Plus } from "@plexui/ui/components/Icon";
@@ -28,12 +27,11 @@ import { useParams } from "next/navigation";
 import { Suspense, useMemo, useState, type CSSProperties } from "react";
 import {
   OverviewTab,
-  InquiriesTab,
   VerificationsTab,
   ReportsTab,
 } from "./components";
 
-const tabs = ["Overview", "Inquiries", "Verifications", "Reports"] as const;
+const tabs = ["Overview", "Verifications", "Reports"] as const;
 type Tab = (typeof tabs)[number];
 
 export default function AccountDetailPage() {
@@ -124,16 +122,6 @@ function AccountDetailContent() {
             >
               <Tabs.Tab value="Overview">Overview</Tabs.Tab>
               <Tabs.Tab
-                value="Inquiries"
-                badge={
-                  accountInquiries.length
-                    ? { content: accountInquiries.length, pill: true }
-                    : undefined
-                }
-              >
-                Inquiries
-              </Tabs.Tab>
-              <Tabs.Tab
                 value="Verifications"
                 badge={
                   accountVerifications.length
@@ -164,9 +152,6 @@ function AccountDetailContent() {
                 verifications={accountVerifications}
               />
             )}
-            {activeTab === "Inquiries" && (
-              <InquiriesTab inquiries={accountInquiries} />
-            )}
             {activeTab === "Verifications" && (
               <VerificationsTab verifications={accountVerifications} />
             )}
@@ -178,59 +163,30 @@ function AccountDetailContent() {
 
         <div className="w-full border-t border-[var(--color-border)] bg-[var(--color-surface)] md:w-[440px] md:min-w-[280px] md:shrink md:overflow-auto md:border-l md:border-t-0">
           <div className="px-5 py-5">
-            <div className="mb-4 flex items-center gap-3">
-              <Avatar name={account.name} size={48} color="primary" />
-              <div>
-                <h3 className="heading-sm text-[var(--color-text)]">
-                  {account.name}
-                </h3>
-                <p className="font-mono text-xs text-[var(--color-text-tertiary)]">
-                  {account.id}
-                </p>
-              </div>
-            </div>
-
             <h3 className="heading-sm text-[var(--color-text)]">Info</h3>
             <div className="mt-3 space-y-1">
+              <InfoRow label="Account Type">{account.type}</InfoRow>
               <InfoRow label="Account ID" copyValue={account.id} mono>
                 {account.id}
               </InfoRow>
               <InfoRow
                 label="Reference ID"
-                copyValue={account.referenceId}
+                copyValue={account.referenceId ?? undefined}
                 mono={!!account.referenceId}
               >
                 {account.referenceId ?? (
-                  <span className="text-[var(--color-text-tertiary)]">—</span>
+                  <span className="text-[var(--color-text-tertiary)]">
+                    No reference ID
+                  </span>
                 )}
               </InfoRow>
               <InfoRow label="Status">
                 <StatusBadge status={account.status} />
               </InfoRow>
-              <InfoRow label="Type">{account.type}</InfoRow>
-              <InfoRow label="Birthdate">
-                {account.birthdate ? (
-                  formatDate(account.birthdate)
-                ) : (
-                  <span className="text-[var(--color-text-tertiary)]">—</span>
-                )}
-              </InfoRow>
-              <InfoRow label="Age">
-                {account.age ? (
-                  `${account.age} years`
-                ) : (
-                  <span className="text-[var(--color-text-tertiary)]">—</span>
-                )}
-              </InfoRow>
-              <InfoRow label="Address">
-                {account.address ?? (
-                  <span className="text-[var(--color-text-tertiary)]">—</span>
-                )}
-              </InfoRow>
-              <InfoRow label="Created At">
+              <InfoRow label="Created at">
                 {formatDateTime(account.createdAt)} UTC
               </InfoRow>
-              <InfoRow label="Updated At">
+              <InfoRow label="Last updated at">
                 {formatDateTime(account.updatedAt)} UTC
               </InfoRow>
             </div>
