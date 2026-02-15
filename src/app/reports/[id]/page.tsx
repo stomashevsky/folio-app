@@ -5,15 +5,21 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Button } from "@plexui/ui/components/Button";
 import { Badge } from "@plexui/ui/components/Badge";
-import { DotsHorizontal, Plus } from "@plexui/ui/components/Icon";
-import { EmptyMessage } from "@plexui/ui/components/EmptyMessage";
+import { DotsHorizontal } from "@plexui/ui/components/Icon";
 import { TopBar } from "@/components/layout/TopBar";
-import { NotFoundPage, InfoRow, SectionHeading, TagEditModal } from "@/components/shared";
+import {
+  NotFoundPage,
+  InlineEmpty,
+  EventTimeline,
+  InfoRow,
+  SectionHeading,
+  TagEditModal,
+} from "@/components/shared";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { ShieldCheck, ExclamationMarkCircleFilled } from "@plexui/ui/components/Icon";
 import { REPORT_TYPE_LABELS } from "@/lib/constants/report-type-labels";
-import { mockReports, mockInquiries } from "@/lib/data";
-import { formatDateTime } from "@/lib/utils/format";
+import { mockReports, mockInquiries, getEventsForReport } from "@/lib/data";
+import { formatDateTime, toTitleCase } from "@/lib/utils/format";
+import { ScreeningResults } from "./components";
 
 export default function ReportDetailPage() {
   return (
@@ -37,10 +43,17 @@ function ReportDetailContent() {
   );
 
   if (!report) {
-    return <NotFoundPage section="Reports" backHref="/reports" entity="Report" />;
+    return (
+      <NotFoundPage
+        section="Reports"
+        backHref="/reports"
+        entity="Report"
+      />
+    );
   }
 
   const reportType = REPORT_TYPE_LABELS[report.type] ?? report.type;
+  const events = getEventsForReport(report.id);
 
   return (
     <div className="flex h-full flex-col">
@@ -48,7 +61,12 @@ function ReportDetailContent() {
         title="Report"
         backHref="/reports"
         actions={
-          <Button color="secondary" variant="outline" size="md" pill={false}>
+          <Button
+            color="secondary"
+            variant="outline"
+            size="md"
+            pill={false}
+          >
             <DotsHorizontal />
             <span className="hidden md:inline">More</span>
           </Button>
@@ -58,34 +76,7 @@ function ReportDetailContent() {
       <div className="flex flex-1 flex-col overflow-auto md:flex-row md:overflow-hidden">
         <div className="flex shrink-0 flex-col md:min-w-0 md:flex-1 md:overflow-auto">
           <div className="flex-1 overflow-auto px-4 py-6 md:px-6">
-            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-              <h2 className="heading-sm text-[var(--color-text)]">Screening results</h2>
-              <div className="mt-4">
-                {report.matchCount === 0 ? (
-                  <EmptyMessage fill="none">
-                    <EmptyMessage.Icon size="sm">
-                      <ShieldCheck />
-                    </EmptyMessage.Icon>
-                    <EmptyMessage.Title>No matches found</EmptyMessage.Title>
-                    <EmptyMessage.Description>
-                      The subject was screened against all available databases.
-                    </EmptyMessage.Description>
-                  </EmptyMessage>
-                ) : (
-                  <EmptyMessage fill="none">
-                    <EmptyMessage.Icon size="sm" color="danger">
-                      <ExclamationMarkCircleFilled />
-                    </EmptyMessage.Icon>
-                    <EmptyMessage.Title color="danger">
-                      {report.matchCount} match{report.matchCount > 1 ? "es" : ""} found
-                    </EmptyMessage.Title>
-                    <EmptyMessage.Description>
-                      Review required. Match details available via API.
-                    </EmptyMessage.Description>
-                  </EmptyMessage>
-                )}
-              </div>
-            </div>
+            <ScreeningResults report={report} />
           </div>
         </div>
 
@@ -98,19 +89,32 @@ function ReportDetailContent() {
               </InfoRow>
               <InfoRow label="Type">{reportType}</InfoRow>
               <InfoRow label="Status">
-                <StatusBadge status={report.status} />
+                <StatusBadge
+                  status={report.status}
+                  label={
+                    report.status === "no_matches"
+                      ? "No Matches"
+                      : undefined
+                  }
+                />
               </InfoRow>
-              <InfoRow label="Primary Input">{report.primaryInput}</InfoRow>
+              <InfoRow label="Primary Input">
+                {toTitleCase(report.primaryInput)}
+              </InfoRow>
               <InfoRow label="Template">{report.templateName}</InfoRow>
               <InfoRow label="Created By">
                 <span className="capitalize">{report.createdBy}</span>
               </InfoRow>
-              <InfoRow label="Created At">{formatDateTime(report.createdAt)} UTC</InfoRow>
+              <InfoRow label="Created At">
+                {formatDateTime(report.createdAt)} UTC
+              </InfoRow>
               <InfoRow label="Completed At">
                 {report.completedAt ? (
                   `${formatDateTime(report.completedAt)} UTC`
                 ) : (
-                  <span className="text-[var(--color-text-tertiary)]">&mdash;</span>
+                  <span className="text-[var(--color-text-tertiary)]">
+                    —
+                  </span>
                 )}
               </InfoRow>
               <InfoRow label="Inquiry ID" copyValue={report.inquiryId} mono>
@@ -122,7 +126,9 @@ function ReportDetailContent() {
                     {report.inquiryId}
                   </Link>
                 ) : (
-                  <span className="text-[var(--color-text-tertiary)]">&mdash;</span>
+                  <span className="text-[var(--color-text-tertiary)]">
+                    —
+                  </span>
                 )}
               </InfoRow>
               <InfoRow label="Account ID" copyValue={report.accountId} mono>
@@ -134,11 +140,30 @@ function ReportDetailContent() {
                     {report.accountId}
                   </Link>
                 ) : (
-                  <span className="text-[var(--color-text-tertiary)]">&mdash;</span>
+                  <span className="text-[var(--color-text-tertiary)]">
+                    —
+                  </span>
                 )}
               </InfoRow>
+              <InfoRow label="Matches">
+                <span
+                  className={
+                    report.matchCount > 0
+                      ? "font-medium text-[var(--color-danger-soft-text)]"
+                      : "text-[var(--color-text-secondary)]"
+                  }
+                >
+                  {report.matchCount}
+                </span>
+              </InfoRow>
               <InfoRow label="Continuous Monitoring">
-                {report.continuousMonitoring ? "Enabled" : "Disabled"}
+                {report.continuousMonitoring ? (
+                  <Badge color="success" size="sm">
+                    Enabled
+                  </Badge>
+                ) : (
+                  "Disabled"
+                )}
               </InfoRow>
             </div>
           </div>
@@ -153,26 +178,34 @@ function ReportDetailContent() {
                   pill={false}
                   onClick={() => setTagModalOpen(true)}
                 >
-                  {tags.length > 0 ? (
-                    "Edit"
-                  ) : (
-                    <>
-                      <Plus />
-                      <span>Add tag</span>
-                    </>
-                  )}
+                  {tags.length > 0 ? "Edit" : "Add"}
                 </Button>
               }
             >
               Tags
             </SectionHeading>
-            {tags.length > 0 && (
+            {tags.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <Badge key={tag} color="secondary" size="sm">
                     {tag}
                   </Badge>
                 ))}
+              </div>
+            ) : (
+              <InlineEmpty>No tags assigned.</InlineEmpty>
+            )}
+          </div>
+
+          <div className="border-t border-[var(--color-border)] px-5 py-4">
+            {events.length > 0 ? (
+              <EventTimeline events={events} />
+            ) : (
+              <div>
+                <h3 className="heading-sm text-[var(--color-text)]">
+                  Event timeline (UTC)
+                </h3>
+                <InlineEmpty>No events recorded.</InlineEmpty>
               </div>
             )}
           </div>

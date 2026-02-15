@@ -1,6 +1,7 @@
 import type { TimelineEvent } from "@/lib/types";
 import { mockInquiries } from "./mock-inquiries";
 import { mockVerifications } from "./mock-verifications";
+import { mockReports } from "./mock-reports";
 
 /**
  * Generate realistic timeline events for an inquiry based on its status and verifications.
@@ -272,7 +273,6 @@ function formatTimeDiff(from: Date, to: Date): string {
   return `${minutes}m ${seconds}s`;
 }
 
-// Pre-generate events for the first 15 hand-curated inquiries
 const eventCache = new Map<string, TimelineEvent[]>();
 
 export function getEventsForInquiry(inquiryId: string): TimelineEvent[] {
@@ -280,4 +280,96 @@ export function getEventsForInquiry(inquiryId: string): TimelineEvent[] {
     eventCache.set(inquiryId, generateEventsForInquiry(inquiryId));
   }
   return eventCache.get(inquiryId)!;
+}
+
+const accountEventCache = new Map<string, TimelineEvent[]>();
+
+export function getEventsForAccount(accountId: string): TimelineEvent[] {
+  if (!accountEventCache.has(accountId)) {
+    const accountInquiries = mockInquiries.filter(
+      (i) => i.accountId === accountId
+    );
+    const allEvents: TimelineEvent[] = [];
+    for (const inquiry of accountInquiries) {
+      allEvents.push(...getEventsForInquiry(inquiry.id));
+    }
+    allEvents.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+    accountEventCache.set(accountId, allEvents);
+  }
+  return accountEventCache.get(accountId)!;
+}
+
+const reportEventCache = new Map<string, TimelineEvent[]>();
+
+export function getEventsForReport(reportId: string): TimelineEvent[] {
+  if (!reportEventCache.has(reportId)) {
+    const report = mockReports.find((r) => r.id === reportId);
+    if (!report) {
+      reportEventCache.set(reportId, []);
+      return [];
+    }
+
+    const events: TimelineEvent[] = [];
+    let idx = 0;
+    const eid = () => `evt_rep_${reportId}_${idx++}`;
+
+    events.push({
+      id: eid(),
+      timestamp: report.createdAt,
+      type: "report.created",
+      level: "info",
+      description: `${report.type === "pep" ? "PEP" : "Watchlist"} report created`,
+      actor: report.createdBy,
+    });
+
+    if (report.completedAt) {
+      const completedDate = new Date(report.completedAt);
+
+      events.push({
+        id: eid(),
+        timestamp: new Date(completedDate.getTime() - 500).toISOString(),
+        type: "report.screening",
+        level: "info",
+        description: `Screening ${report.primaryInput} against databases`,
+      });
+
+      if (report.matchCount > 0) {
+        events.push({
+          id: eid(),
+          timestamp: report.completedAt,
+          type: "report.matches_found",
+          level: "warning",
+          description: `${report.matchCount} match${report.matchCount > 1 ? "es" : ""} identified — review required`,
+        });
+      } else {
+        events.push({
+          id: eid(),
+          timestamp: report.completedAt,
+          type: "report.clear",
+          level: "success",
+          description: "Screening complete — no matches found",
+        });
+      }
+
+      if (report.continuousMonitoring) {
+        events.push({
+          id: eid(),
+          timestamp: new Date(completedDate.getTime() + 500).toISOString(),
+          type: "report.monitoring_enabled",
+          level: "info",
+          description: "Continuous monitoring enabled",
+        });
+      }
+    }
+
+    events.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+    reportEventCache.set(reportId, events);
+  }
+  return reportEventCache.get(reportId)!;
 }

@@ -82,6 +82,18 @@ export interface Check {
   reasons?: string[];
 }
 
+export interface ReportMatch {
+  id: string;
+  name: string;
+  score: number;
+  source: string;
+  country?: string;
+  matchType: "exact" | "partial" | "fuzzy";
+  listedDate?: string;
+  aliases?: string[];
+  status: "pending_review" | "confirmed" | "dismissed";
+}
+
 export interface Report {
   id: string; // rep_...
   inquiryId?: string;
@@ -95,6 +107,7 @@ export interface Report {
   continuousMonitoring: boolean;
   createdBy: "workflow" | "manual" | "api";
   matchCount: number;
+  matches?: ReportMatch[];
 }
 
 export interface Account {

@@ -1,5 +1,62 @@
-import type { Report } from "@/lib/types";
+import type { Report, ReportMatch } from "@/lib/types";
 import { generateId } from "./id-generator";
+
+const watchlistSources = [
+  "OFAC SDN List",
+  "EU Consolidated Sanctions",
+  "UN Security Council",
+  "UK HMT Sanctions",
+  "Australia DFAT Sanctions",
+  "Canada OSFI List",
+];
+
+const pepSources = [
+  "PEP Database — National",
+  "PEP Database — International",
+  "World Leaders Index",
+];
+
+function generateMatches(
+  primaryInput: string,
+  matchCount: number,
+  reportType: string,
+  seed: number,
+): ReportMatch[] {
+  const sources = reportType === "pep" ? pepSources : watchlistSources;
+  const matches: ReportMatch[] = [];
+  const names = primaryInput.split(" ");
+  const surname = names[names.length - 1];
+
+  const matchNames = [
+    primaryInput,
+    `${names[0]} ${surname.charAt(0)}. ${surname}`,
+    `${surname}, ${names[0]}`,
+    `${names[0]} ${surname}-HASSAN`,
+  ];
+
+  const countries = ["Iran", "North Korea", "Syria", "Russia", "Myanmar", "Libya"];
+
+  for (let i = 0; i < matchCount; i++) {
+    const idx = (seed + i) % matchNames.length;
+    const sourceIdx = (seed + i) % sources.length;
+    const countryIdx = (seed + i * 3) % countries.length;
+    const score = i === 0 ? 92 - (seed % 10) : 78 - (i * 7) - (seed % 5);
+
+    matches.push({
+      id: `mtch_${generateId("m", seed * 100 + i).slice(2)}`,
+      name: matchNames[idx],
+      score: Math.max(55, Math.min(98, score)),
+      source: sources[sourceIdx],
+      country: countries[countryIdx],
+      matchType: score > 85 ? "exact" : score > 70 ? "partial" : "fuzzy",
+      listedDate: `20${10 + (seed % 15)}-${String(1 + (i % 12)).padStart(2, "0")}-${String(1 + (seed % 28)).padStart(2, "0")}`,
+      aliases: i === 0 ? [`${surname} ${names[0]}`, `${names[0].charAt(0)}. ${surname}`] : undefined,
+      status: i === 0 ? "pending_review" : "pending_review",
+    });
+  }
+
+  return matches;
+}
 
 export const mockReports: Report[] = [
   {
@@ -57,6 +114,7 @@ export const mockReports: Report[] = [
     continuousMonitoring: true,
     createdBy: "workflow",
     matchCount: 2,
+    matches: generateMatches("YUKI TANAKA", 2, "watchlist", 41),
   },
   {
     id: "rep_C3dEfGhIjKlMnOpQrStUvWxYzAbC",
@@ -84,6 +142,7 @@ export const mockReports: Report[] = [
     continuousMonitoring: true,
     createdBy: "manual",
     matchCount: 1,
+    matches: generateMatches("LARS ERIKSSON", 1, "watchlist", 39),
   },
 ];
 
@@ -122,6 +181,10 @@ for (const p of generatedPeople) {
     continuousMonitoring: watchlistStatus === "match" || p.index % 4 === 0,
     createdBy: "workflow",
     matchCount: watchlistMatches,
+    matches:
+      watchlistMatches > 0
+        ? generateMatches(p.name.toUpperCase(), watchlistMatches, "watchlist", p.index)
+        : undefined,
   });
 
   // PEP report
