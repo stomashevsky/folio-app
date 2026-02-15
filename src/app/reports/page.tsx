@@ -20,54 +20,26 @@ import {
 import { Plus, Download } from "@plexui/ui/components/Icon";
 import { LIST_PAGE_DATE_SHORTCUTS } from "@/lib/constants/date-shortcuts";
 import { REPORT_TYPE_LABELS } from "@/lib/constants/report-type-labels";
+import {
+  REPORT_STATUS_OPTIONS,
+  REPORT_CREATED_BY_OPTIONS,
+} from "@/lib/constants/filter-options";
+import {
+  REPORT_COLUMN_CONFIG,
+  REPORT_DEFAULT_VISIBILITY,
+} from "@/lib/constants/column-configs";
 
-// ─── Filter options ───
-
-const STATUS_OPTIONS = [
-  { value: "pending", label: "Pending" },
-  { value: "ready", label: "Ready" },
-  { value: "no_matches", label: "No Matches" },
-  { value: "match", label: "Match" },
-];
+const STATUS_OPTIONS = REPORT_STATUS_OPTIONS;
 
 const TYPE_OPTIONS = Object.entries(REPORT_TYPE_LABELS).map(([value, label]) => ({
   value,
   label,
 }));
 
-const CREATED_BY_OPTIONS = [
-  { value: "workflow", label: "Workflow" },
-  { value: "manual", label: "Manual" },
-  { value: "api", label: "API" },
-];
+const CREATED_BY_OPTIONS = REPORT_CREATED_BY_OPTIONS;
 
-// ─── Column config for ColumnSettings panel ───
-
-const COLUMN_CONFIG: ColumnConfig[] = [
-  { id: "primaryInput", label: "Primary Input" },
-  { id: "type", label: "Type" },
-  { id: "id", label: "Report ID" },
-  { id: "createdAt", label: "Created at" },
-  { id: "status", label: "Status" },
-  { id: "templateName", label: "Template" },
-  { id: "completedAt", label: "Completed at" },
-  { id: "createdBy", label: "Created by" },
-  { id: "matchCount", label: "Matches" },
-  { id: "continuousMonitoring", label: "Monitoring" },
-];
-
-const DEFAULT_VISIBILITY: VisibilityState = {
-  primaryInput: true,
-  type: true,
-  id: true,
-  createdAt: true,
-  status: true,
-  templateName: false,
-  completedAt: false,
-  createdBy: false,
-  matchCount: false,
-  continuousMonitoring: false,
-};
+const COLUMN_CONFIG: ColumnConfig[] = REPORT_COLUMN_CONFIG;
+const DEFAULT_VISIBILITY: VisibilityState = REPORT_DEFAULT_VISIBILITY;
 
 // ─── Column definitions ───
 

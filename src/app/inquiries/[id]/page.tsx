@@ -40,7 +40,7 @@ type Tab = (typeof tabs)[number];
 
 export default function InquiryDetailPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <InquiryDetailContent />
     </Suspense>
   );

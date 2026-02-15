@@ -2,26 +2,33 @@
 
 import { TopBar } from "@/components/layout/TopBar";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { ChartCard, NotFoundPage, InlineEmpty, DetailInfoList, EntityCard, ActivityItem } from "@/components/shared";
-import { mockAccounts, mockInquiries, mockVerifications, mockReports } from "@/lib/data";
-import { formatDateTime, formatDate, truncateId } from "@/lib/utils/format";
-import { useParams, useRouter } from "next/navigation";
-import { Suspense } from "react";
-import { useTabParam } from "@/lib/hooks/useTabParam";
-import { Avatar } from "@plexui/ui/components/Avatar";
-import { Tabs } from "@plexui/ui/components/Tabs";
 import {
-  FileSearch,
-  ShieldCheck,
-  FileText,
-} from "lucide-react";
+  ChartCard,
+  NotFoundPage,
+  InlineEmpty,
+  DetailInfoList,
+  EntityCard,
+  InfoRow,
+  SectionHeading,
+  TagEditModal,
+} from "@/components/shared";
+import { mockAccounts, mockInquiries, mockVerifications, mockReports } from "@/lib/data";
+import { useTabParam } from "@/lib/hooks/useTabParam";
+import { formatDateTime, formatDate, truncateId } from "@/lib/utils/format";
+import { Avatar } from "@plexui/ui/components/Avatar";
+import { Badge } from "@plexui/ui/components/Badge";
+import { Button } from "@plexui/ui/components/Button";
+import { DotsHorizontal, Plus } from "@plexui/ui/components/Icon";
+import { Tabs } from "@plexui/ui/components/Tabs";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useMemo, useState, type CSSProperties } from "react";
 
 const tabs = ["Overview", "Inquiries", "Verifications", "Reports"] as const;
 type Tab = (typeof tabs)[number];
 
 export default function AccountDetailPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <AccountDetailContent />
     </Suspense>
   );
@@ -33,14 +40,22 @@ function AccountDetailContent() {
   const [activeTab, setActiveTab] = useTabParam(tabs, "Overview");
 
   const account = mockAccounts.find((a) => a.id === params.id);
-  const accountInquiries = mockInquiries.filter(
-    (i) => i.accountId === account?.id
+  const accountInquiries = mockInquiries.filter((inquiry) => inquiry.accountId === account?.id);
+  const accountVerifications = mockVerifications.filter((verification) =>
+    accountInquiries.some((inquiry) => inquiry.id === verification.inquiryId)
   );
-  const accountVerifications = mockVerifications.filter((v) =>
-    accountInquiries.some((i) => i.id === v.inquiryId)
+  const accountReports = mockReports.filter((report) => report.accountId === account?.id);
+
+  const [tags, setTags] = useState<string[]>(() =>
+    Array.from(new Set(accountInquiries.flatMap((inquiry) => inquiry.tags))).filter(Boolean)
   );
-  const accountReports = mockReports.filter(
-    (r) => r.accountId === account?.id
+  const [tagModalOpen, setTagModalOpen] = useState(false);
+  const allKnownTags = useMemo(
+    () =>
+      Array.from(new Set(mockInquiries.flatMap((inquiry) => inquiry.tags)))
+        .filter(Boolean)
+        .sort(),
+    []
   );
 
   if (!account) {
@@ -48,162 +63,221 @@ function AccountDetailContent() {
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex h-full flex-col">
       <TopBar
-        title="Accounts"
+        title="Account"
         backHref="/accounts"
+        actions={
+          <div className="flex items-center gap-2">
+            <Button color="primary" size="md" pill={false}>
+              <Plus />
+              <span className="hidden md:inline">Create inquiry</span>
+            </Button>
+            <Button color="secondary" variant="outline" size="md" pill={false}>
+              <DotsHorizontal />
+              <span className="hidden md:inline">More</span>
+            </Button>
+          </div>
+        }
       />
-      <div className="px-4 pb-6 pt-6 md:px-6">
-        {/* Profile Header */}
-        <div className="flex items-center gap-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-          <Avatar name={account.name} size={64} color="primary" />
-          <div className="flex-1">
-            <h2 className="heading-sm text-[var(--color-text)]">
-              {account.name}
-            </h2>
-            <p className="font-mono text-xs text-[var(--color-text-tertiary)]">
-              {account.id}
-            </p>
-            {account.address && (
-              <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
-                {account.address}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-4">
-            <StatusBadge status={account.status} />
-            <div className="flex gap-6 text-center">
-              {[
-                { value: account.inquiryCount, label: "Inquiries" },
-                { value: account.verificationCount, label: "Verifications" },
-                { value: account.reportCount, label: "Reports" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="heading-sm text-[var(--color-text)]">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-[var(--color-text-tertiary)]">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* Tabs */}
-        <div className="mt-6">
-          <Tabs
-            value={activeTab}
-            onChange={(v) => setActiveTab(v as Tab)}
-            variant="underline"
-            aria-label="Account sections"
-            size="md"
+      <div className="flex flex-1 flex-col overflow-auto md:flex-row md:overflow-hidden">
+        <div className="flex shrink-0 flex-col md:min-w-0 md:flex-1 md:overflow-auto">
+          <div
+            className="shrink-0 overflow-x-auto px-4 pt-4 md:px-6"
+            style={{ "--color-ring": "transparent" } as CSSProperties}
           >
-            <Tabs.Tab value="Overview">Overview</Tabs.Tab>
-            <Tabs.Tab value="Inquiries" badge={accountInquiries.length ? { content: accountInquiries.length, pill: true } : undefined}>Inquiries</Tabs.Tab>
-            <Tabs.Tab value="Verifications" badge={accountVerifications.length ? { content: accountVerifications.length, pill: true } : undefined}>Verifications</Tabs.Tab>
-            <Tabs.Tab value="Reports" badge={accountReports.length ? { content: accountReports.length, pill: true } : undefined}>Reports</Tabs.Tab>
-          </Tabs>
-        </div>
+            <Tabs
+              value={activeTab}
+              onChange={(value) => setActiveTab(value as Tab)}
+              variant="underline"
+              aria-label="Account sections"
+              size="lg"
+            >
+              <Tabs.Tab value="Overview">Overview</Tabs.Tab>
+              <Tabs.Tab value="Inquiries" badge={accountInquiries.length ? { content: accountInquiries.length, pill: true } : undefined}>
+                Inquiries
+              </Tabs.Tab>
+              <Tabs.Tab
+                value="Verifications"
+                badge={accountVerifications.length ? { content: accountVerifications.length, pill: true } : undefined}
+              >
+                Verifications
+              </Tabs.Tab>
+              <Tabs.Tab value="Reports" badge={accountReports.length ? { content: accountReports.length, pill: true } : undefined}>
+                Reports
+              </Tabs.Tab>
+            </Tabs>
+          </div>
 
-        {/* Tab Content */}
-        <div className="mt-6">
-          {activeTab === "Overview" && (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="flex-1 overflow-auto px-4 py-6 md:px-6">
+            {activeTab === "Overview" && (
               <ChartCard title="Profile">
                 <DetailInfoList
                   items={[
                     ["Account ID", account.id],
-                    ["Reference ID", account.referenceId ?? "—"],
+                    ["Reference ID", account.referenceId ?? "-"],
+                    ["Status", <StatusBadge key="status" status={account.status} />],
                     ["Type", account.type],
-                    ["Birthdate", account.birthdate ? formatDate(account.birthdate) : "—"],
-                    ["Age", account.age ? `${account.age} years` : "—"],
-                    ["Address", account.address ?? "—"],
-                    ["Created At", formatDateTime(account.createdAt)],
-                    ["Updated At", formatDateTime(account.updatedAt)],
+                    ["Birthdate", account.birthdate ? formatDate(account.birthdate) : "-"],
+                    ["Age", account.age ? `${account.age} years` : "-"],
+                    ["Address", account.address ?? "-"],
+                    ["Created At", `${formatDateTime(account.createdAt)} UTC`],
+                    ["Updated At", `${formatDateTime(account.updatedAt)} UTC`],
                   ]}
                 />
               </ChartCard>
+            )}
 
-              <ChartCard title="Activity Summary">
-                <div className="space-y-4">
-                  <ActivityItem
-                    icon={<FileSearch className="h-5 w-5" />}
-                    title={`${accountInquiries.length} Inquiries`}
-                    subtitle={`${accountInquiries.filter((i) => i.status === "approved").length} approved`}
-                  />
-                  <ActivityItem
-                    icon={<ShieldCheck className="h-5 w-5" />}
-                    title={`${accountVerifications.length} Verifications`}
-                    subtitle={`${accountVerifications.filter((v) => v.status === "passed").length} passed`}
-                  />
-                  <ActivityItem
-                    icon={<FileText className="h-5 w-5" />}
-                    title={`${accountReports.length} Reports`}
-                    subtitle={`${accountReports.filter((r) => r.status === "no_matches").length} clean`}
-                  />
-                </div>
-              </ChartCard>
-            </div>
-          )}
+            {activeTab === "Inquiries" && (
+              <div className="space-y-3">
+                {accountInquiries.length === 0 ? (
+                  <InlineEmpty>No inquiries for this account.</InlineEmpty>
+                ) : (
+                  accountInquiries.map((inquiry) => (
+                    <EntityCard
+                      key={inquiry.id}
+                      title={inquiry.templateName}
+                      subtitle={`${truncateId(inquiry.id)} - ${formatDateTime(inquiry.createdAt)}`}
+                      status={inquiry.status}
+                      onClick={() => router.push(`/inquiries/${inquiry.id}`)}
+                    />
+                  ))
+                )}
+              </div>
+            )}
 
-          {activeTab === "Inquiries" && (
-            <div className="space-y-3">
-              {accountInquiries.length === 0 ? (
-                <InlineEmpty>No inquiries for this account.</InlineEmpty>
-              ) : (
-                accountInquiries.map((inq) => (
-                  <EntityCard
-                    key={inq.id}
-                    title={inq.templateName}
-                    subtitle={`${truncateId(inq.id)} · ${formatDateTime(inq.createdAt)}`}
-                    status={inq.status}
-                    onClick={() => router.push(`/inquiries/${inq.id}`)}
-                  />
-                ))
-              )}
-            </div>
-          )}
+            {activeTab === "Verifications" && (
+              <div className="space-y-3">
+                {accountVerifications.length === 0 ? (
+                  <InlineEmpty>No verifications for this account.</InlineEmpty>
+                ) : (
+                  accountVerifications.map((verification) => (
+                    <EntityCard
+                      key={verification.id}
+                      title={`${verification.type.replace("_", " ")} Verification`}
+                      subtitle={`${truncateId(verification.id)} - ${formatDateTime(verification.createdAt)}`}
+                      status={verification.status}
+                      onClick={() => router.push(`/verifications/${verification.id}`)}
+                      titleClassName="capitalize"
+                    />
+                  ))
+                )}
+              </div>
+            )}
 
-          {activeTab === "Verifications" && (
-            <div className="space-y-3">
-              {accountVerifications.length === 0 ? (
-                <InlineEmpty>No verifications for this account.</InlineEmpty>
-              ) : (
-                accountVerifications.map((v) => (
-                  <EntityCard
-                    key={v.id}
-                    title={`${v.type.replace("_", " ")} Verification`}
-                    subtitle={`${truncateId(v.id)} · ${formatDateTime(v.createdAt)}`}
-                    status={v.status}
-                    onClick={() => router.push(`/verifications/${v.id}`)}
-                    titleClassName="capitalize"
-                  />
-                ))
-              )}
-            </div>
-          )}
+            {activeTab === "Reports" && (
+              <div className="space-y-3">
+                {accountReports.length === 0 ? (
+                  <InlineEmpty>No reports for this account.</InlineEmpty>
+                ) : (
+                  accountReports.map((report) => (
+                    <EntityCard
+                      key={report.id}
+                      title={report.templateName}
+                      subtitle={`${truncateId(report.id)} - ${formatDateTime(report.createdAt)}`}
+                      status={report.status}
+                      onClick={() => router.push(`/reports/${report.id}`)}
+                    />
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
-          {activeTab === "Reports" && (
-            <div className="space-y-3">
-              {accountReports.length === 0 ? (
-                <InlineEmpty>No reports for this account.</InlineEmpty>
-              ) : (
-                accountReports.map((r) => (
-                  <EntityCard
-                    key={r.id}
-                    title={r.templateName}
-                    subtitle={`${truncateId(r.id)} · ${formatDateTime(r.createdAt)}`}
-                    status={r.status}
-                    onClick={() => router.push(`/reports/${r.id}`)}
-                  />
-                ))
-              )}
+        <div className="w-full border-t border-[var(--color-border)] bg-[var(--color-surface)] md:w-[440px] md:min-w-[280px] md:shrink md:overflow-auto md:border-l md:border-t-0">
+          <div className="px-5 py-5">
+            <div className="mb-4 flex items-center gap-3">
+              <Avatar name={account.name} size={48} color="primary" />
+              <div>
+                <h3 className="heading-sm text-[var(--color-text)]">{account.name}</h3>
+                <p className="font-mono text-xs text-[var(--color-text-tertiary)]">{account.id}</p>
+              </div>
             </div>
-          )}
+
+            <h3 className="heading-sm text-[var(--color-text)]">Info</h3>
+            <div className="mt-3 space-y-1">
+              <InfoRow label="Account ID" copyValue={account.id} mono>
+                {account.id}
+              </InfoRow>
+              <InfoRow label="Reference ID" copyValue={account.referenceId} mono={!!account.referenceId}>
+                {account.referenceId ?? <span className="text-[var(--color-text-tertiary)]">-</span>}
+              </InfoRow>
+              <InfoRow label="Status">
+                <StatusBadge status={account.status} />
+              </InfoRow>
+              <InfoRow label="Type">{account.type}</InfoRow>
+              <InfoRow label="Birthdate">
+                {account.birthdate ? formatDate(account.birthdate) : <span className="text-[var(--color-text-tertiary)]">-</span>}
+              </InfoRow>
+              <InfoRow label="Age">
+                {account.age ? `${account.age} years` : <span className="text-[var(--color-text-tertiary)]">-</span>}
+              </InfoRow>
+              <InfoRow label="Address">
+                {account.address ?? <span className="text-[var(--color-text-tertiary)]">-</span>}
+              </InfoRow>
+              <InfoRow label="Created At">{formatDateTime(account.createdAt)} UTC</InfoRow>
+              <InfoRow label="Updated At">{formatDateTime(account.updatedAt)} UTC</InfoRow>
+            </div>
+          </div>
+
+          <div className="border-t border-[var(--color-border)] px-5 py-4">
+            <SectionHeading>Activity</SectionHeading>
+            <div className="mt-2 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[var(--color-text-secondary)]">Inquiries</span>
+                <span className="heading-xs text-[var(--color-text)]">{accountInquiries.length}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[var(--color-text-secondary)]">Verifications</span>
+                <span className="heading-xs text-[var(--color-text)]">{accountVerifications.length}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[var(--color-text-secondary)]">Reports</span>
+                <span className="heading-xs text-[var(--color-text)]">{accountReports.length}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-[var(--color-border)] px-5 py-4">
+            <SectionHeading
+              action={
+                <Button
+                  color="secondary"
+                  variant="ghost"
+                  size="sm"
+                  pill={false}
+                  onClick={() => setTagModalOpen(true)}
+                >
+                  {tags.length > 0 ? "Edit" : "Add"}
+                </Button>
+              }
+            >
+              Tags
+            </SectionHeading>
+            {tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <Badge key={tag} color="secondary" size="sm">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <InlineEmpty>No tags assigned.</InlineEmpty>
+            )}
+          </div>
         </div>
       </div>
+
+      <TagEditModal
+        open={tagModalOpen}
+        onOpenChange={setTagModalOpen}
+        tags={tags}
+        onSave={setTags}
+        allTags={allKnownTags}
+      />
     </div>
   );
 }

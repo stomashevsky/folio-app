@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Badge } from "@plexui/ui/components/Badge";
 import { Button } from "@plexui/ui/components/Button";
 import { Field } from "@plexui/ui/components/Field";
@@ -23,14 +23,9 @@ export function TagEditModal({
   onSave,
   allTags,
 }: TagEditModalProps) {
-  const [draftTags, setDraftTags] = useState<Tag[]>([]);
-
-  // Sync draft with current tags when modal opens
-  useEffect(() => {
-    if (open) {
-      setDraftTags(tags.map((t) => ({ value: t, valid: true })));
-    }
-  }, [open, tags]);
+  const [draftTags, setDraftTags] = useState<Tag[]>(() =>
+    tags.map((t) => ({ value: t, valid: true })),
+  );
 
   // Suggestions: all known tags minus those already in the draft
   const suggestions = useMemo(() => {
@@ -52,7 +47,7 @@ export function TagEditModal({
   }, [onOpenChange]);
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
+    <Modal key={tags.join(",")} open={open} onOpenChange={onOpenChange}>
       <ModalHeader>
         <h2 className="heading-sm text-[var(--color-text)]">Update tags</h2>
       </ModalHeader>

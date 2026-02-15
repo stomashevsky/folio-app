@@ -27,7 +27,7 @@ export function SettingsTable<T>({
               {columns.map((col) => (
                 <th
                   key={col.header}
-                  className={`px-4 py-3 text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)] ${
+                  className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)] ${
                     col.align === "right" ? "text-right" : "text-left"
                   }`}
                 >

@@ -19,44 +19,20 @@ import {
 import { Plus, Download } from "@plexui/ui/components/Icon";
 import { LIST_PAGE_DATE_SHORTCUTS } from "@/lib/constants/date-shortcuts";
 import { VERIFICATION_TYPE_LABELS } from "@/lib/constants/verification-type-labels";
+import {
+  VERIFICATION_STATUS_OPTIONS,
+  VERIFICATION_TYPE_OPTIONS,
+} from "@/lib/constants/filter-options";
+import {
+  VERIFICATION_COLUMN_CONFIG,
+  VERIFICATION_DEFAULT_VISIBILITY,
+} from "@/lib/constants/column-configs";
 
-// ─── Filter options ───
+const STATUS_OPTIONS = VERIFICATION_STATUS_OPTIONS;
+const TYPE_OPTIONS = VERIFICATION_TYPE_OPTIONS;
 
-const STATUS_OPTIONS = [
-  { value: "initiated", label: "Initiated" },
-  { value: "submitted", label: "Submitted" },
-  { value: "passed", label: "Passed" },
-  { value: "failed", label: "Failed" },
-  { value: "requires_retry", label: "Requires Retry" },
-  { value: "canceled", label: "Canceled" },
-];
-
-const TYPE_OPTIONS = [
-  { value: "government_id", label: "Government ID" },
-  { value: "selfie", label: "Selfie" },
-  { value: "database", label: "Database" },
-  { value: "document", label: "Document" },
-];
-
-// ─── Column config for ColumnSettings panel ───
-
-const COLUMN_CONFIG: ColumnConfig[] = [
-  { id: "type", label: "Type" },
-  { id: "id", label: "Verification ID" },
-  { id: "inquiryId", label: "Inquiry ID" },
-  { id: "createdAt", label: "Created at" },
-  { id: "status", label: "Status" },
-  { id: "completedAt", label: "Completed at" },
-];
-
-const DEFAULT_VISIBILITY: VisibilityState = {
-  type: true,
-  id: true,
-  inquiryId: true,
-  createdAt: true,
-  status: true,
-  completedAt: false,
-};
+const COLUMN_CONFIG: ColumnConfig[] = VERIFICATION_COLUMN_CONFIG;
+const DEFAULT_VISIBILITY: VisibilityState = VERIFICATION_DEFAULT_VISIBILITY;
 
 // ─── Column definitions ───
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { createPortal } from "react-dom";
 import { useScrollLock } from "@/lib/hooks/useScrollLock";
 import { Button } from "@plexui/ui/components/Button";
@@ -36,12 +37,6 @@ export function DocumentViewer({
   const hasNext = index < items.length - 1;
   const hasExtractions =
     item.extractedData && Object.keys(item.extractedData).length > 0;
-
-  // Reset zoom/rotation on photo change
-  useEffect(() => {
-    setZoom(100);
-    setRotation(0);
-  }, [index]);
 
   // Lock body scroll on mount
   useScrollLock(true);
@@ -100,7 +95,7 @@ export function DocumentViewer({
   const filename = item.photo.url.split("/").pop() || item.photo.label;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#0d0d0d]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-black">
       {/* ─── Top Bar ─── */}
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 px-4">
         {/* Left: back + label */}
@@ -182,9 +177,12 @@ export function DocumentViewer({
         <div
           className="relative flex flex-1 items-center justify-center overflow-auto"
         >
-          <img
+          <Image
+            key={index}
             src={item.photo.url}
             alt={item.photo.label}
+            width={1920}
+            height={1080}
             className="object-contain"
             style={{
               transform: `scale(${zoom / 100}) rotate(${rotation}deg)`,
@@ -192,9 +190,15 @@ export function DocumentViewer({
               transition: "transform 0.2s ease",
               maxWidth: "85%",
               maxHeight: "85%",
+              width: "auto",
+              height: "auto",
             }}
             draggable={false}
             onClick={(e) => e.stopPropagation()}
+            onLoad={() => {
+              setZoom(100);
+              setRotation(0);
+            }}
           />
 
           {/* Nav arrows */}
@@ -215,7 +219,7 @@ export function DocumentViewer({
         </div>
 
         {/* Sidebar — always visible */}
-        <div className="w-80 shrink-0 overflow-auto border-l border-white/10 bg-[#1a1a1a]">
+        <div className="w-80 shrink-0 overflow-auto border-l border-white/10 bg-zinc-950">
           {hasExtractions ? (
             <>
               <div className="border-b border-white/10 px-4 py-3">

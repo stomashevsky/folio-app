@@ -20,23 +20,17 @@ import {
 import { Plus } from "@plexui/ui/components/Icon";
 import { Download } from "@plexui/ui/components/Icon";
 import { LIST_PAGE_DATE_SHORTCUTS } from "@/lib/constants/date-shortcuts";
+import {
+  INQUIRY_STATUS_OPTIONS,
+  INQUIRY_TEMPLATE_OPTIONS,
+} from "@/lib/constants/filter-options";
+import {
+  INQUIRY_COLUMN_CONFIG,
+  INQUIRY_DEFAULT_VISIBILITY,
+} from "@/lib/constants/column-configs";
 
-// ─── Filter options ───
-
-const STATUS_OPTIONS = [
-  { value: "created", label: "Created" },
-  { value: "pending", label: "Pending" },
-  { value: "completed", label: "Completed" },
-  { value: "needs_review", label: "Needs Review" },
-  { value: "approved", label: "Approved" },
-  { value: "expired", label: "Expired" },
-  { value: "declined", label: "Declined" },
-];
-
-const TEMPLATE_OPTIONS = [
-  { value: "KYC + AML: GovID + Selfie", label: "KYC + AML: GovID + Selfie" },
-  { value: "KYC: GovID Only", label: "KYC: GovID Only" },
-];
+const STATUS_OPTIONS = INQUIRY_STATUS_OPTIONS;
+const TEMPLATE_OPTIONS = INQUIRY_TEMPLATE_OPTIONS;
 
 const TAG_OPTIONS = Array.from(
   new Set(mockInquiries.flatMap((inq) => inq.tags))
@@ -45,29 +39,8 @@ const TAG_OPTIONS = Array.from(
   .sort()
   .map((tag) => ({ value: tag, label: tag }));
 
-// ─── Column config for ColumnSettings panel ───
-
-const COLUMN_CONFIG: ColumnConfig[] = [
-  { id: "accountName", label: "Name" },
-  { id: "id", label: "Inquiry ID" },
-  { id: "templateName", label: "Template" },
-  { id: "createdAt", label: "Created at" },
-  { id: "status", label: "Status" },
-  { id: "referenceId", label: "Reference ID" },
-  { id: "completedAt", label: "Completed at" },
-  { id: "tags", label: "Tags" },
-];
-
-const DEFAULT_VISIBILITY: VisibilityState = {
-  accountName: true,
-  id: true,
-  templateName: true,
-  createdAt: true,
-  status: true,
-  referenceId: false,
-  completedAt: false,
-  tags: false,
-};
+const COLUMN_CONFIG: ColumnConfig[] = INQUIRY_COLUMN_CONFIG;
+const DEFAULT_VISIBILITY: VisibilityState = INQUIRY_DEFAULT_VISIBILITY;
 
 // ─── Column definitions ───
 

@@ -24,7 +24,7 @@ export function ReportsTab({ reports }: { reports: typeof mockReports }) {
         </colgroup>
         <thead>
           <tr className="border-b border-[var(--color-border)]">
-            <th className="px-4 py-2.5 text-left text-xs font-medium text-[var(--color-text-tertiary)]">
+            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
               <span className="inline-flex items-center gap-1">
                 Primary Input
                 <Tooltip content="The name or identifier used as the primary search input for this report" side="top" maxWidth={260}>
@@ -34,10 +34,10 @@ export function ReportsTab({ reports }: { reports: typeof mockReports }) {
                 </Tooltip>
               </span>
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-medium text-[var(--color-text-tertiary)]">
+            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
               Status
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-medium text-[var(--color-text-tertiary)]">
+            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
               <span className="inline-flex items-center gap-1">
                 Report ID
                 <Tooltip content="Unique identifier for the report. Click to view report details." side="top" maxWidth={260}>
@@ -47,7 +47,7 @@ export function ReportsTab({ reports }: { reports: typeof mockReports }) {
                 </Tooltip>
               </span>
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-medium text-[var(--color-text-tertiary)]">
+            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
               Last updated at
             </th>
           </tr>

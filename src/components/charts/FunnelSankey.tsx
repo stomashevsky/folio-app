@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import type { SankeyFunnelData, SankeyLink, SankeyLinkType } from "@/lib/types";
 import { formatNumber } from "@/lib/utils/format";
+import { CHART_COLORS } from "@/lib/constants/chart-colors";
 
 /* ─── Props ─── */
 export type SankeyMetric = "counts" | "rates";
@@ -18,9 +19,9 @@ const VIEWBOX_H = 420;
 const NODE_WIDTH = 12;
 
 const LINK_COLORS: Record<SankeyLinkType, string> = {
-  success: "#22c55e",
-  failure: "#ef4444",
-  abandon: "#94a3b8",
+  success: CHART_COLORS.success,
+  failure: CHART_COLORS.danger,
+  abandon: CHART_COLORS.neutral,
 };
 
 const LINK_OPACITY: Record<SankeyLinkType, number> = {
@@ -209,12 +210,12 @@ export function FunnelSankey({ data, metric = "counts" }: FunnelSankeyProps) {
   const [hoveredNode, setHoveredNode] = useState<number | null>(null);
   const [hoveredLink, setHoveredLink] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null);
+  const [containerWidth, setContainerWidth] = useState(960);
 
   /* Pre-compute thicknesses */
-  const { thicknesses, maxValue } = useMemo(() => {
+  const { thicknesses } = useMemo(() => {
     const mv = Math.max(...data.links.map((l) => l.value), 1);
     return {
-      maxValue: mv,
       thicknesses: data.links.map((l) => getLinkThickness(l.value, mv)),
     };
   }, [data]);
@@ -248,6 +249,18 @@ export function FunnelSankey({ data, metric = "counts" }: FunnelSankeyProps) {
       (a, b) => priority[data.links[a].type] - priority[data.links[b].type],
     );
   }, [data]);
+
+  /* Update container width on mount and resize */
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    setContainerWidth(container.clientWidth);
+    const handleResize = () => {
+      if (container) setContainerWidth(container.clientWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   /* Mouse handlers */
   const handleMouseMove = useCallback(
@@ -406,7 +419,7 @@ export function FunnelSankey({ data, metric = "counts" }: FunnelSankeyProps) {
         <div
           className="pointer-events-none absolute z-50 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-2 shadow-lg"
           style={{
-            left: Math.min(tooltip.x + 12, (containerRef.current?.clientWidth ?? 960) - 180),
+            left: Math.min(tooltip.x + 12, containerWidth - 180),
             top: Math.max(tooltip.y - 10, 0),
           }}
         >

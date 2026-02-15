@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { TimeSeriesPoint } from "@/lib/types";
+import { CHART_COLORS } from "@/lib/constants/chart-colors";
 
 interface SimpleBarChartProps {
   data: TimeSeriesPoint[];
@@ -66,7 +67,7 @@ export function SimpleBarChart({ data }: SimpleBarChartProps) {
         />
         <Bar
           dataKey="value"
-          fill="#b8e0ff"
+          fill={CHART_COLORS.accent}
           radius={[2, 2, 0, 0]}
           maxBarSize={14}
           name="Inquiries"

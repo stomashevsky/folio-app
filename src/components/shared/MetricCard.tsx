@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, TrendingDown, Info } from "lucide-react";
+import { ArrowUpSm, ArrowDownSm, InfoCircle } from "@plexui/ui/components/Icon";
 import { Tooltip } from "@plexui/ui/components/Tooltip";
 
 interface MetricCardProps {
@@ -32,7 +32,7 @@ export function MetricCard({
           <p className="text-xs whitespace-nowrap text-[var(--color-text-secondary)]">{label}</p>
           {tooltip && (
             <Tooltip content={tooltip}>
-              <Info className="h-3.5 w-3.5 shrink-0 cursor-help text-[var(--color-text-tertiary)]" />
+              <InfoCircle className="h-3.5 w-3.5 shrink-0 cursor-help text-[var(--color-text-tertiary)]" />
             </Tooltip>
           )}
         </div>
@@ -49,13 +49,13 @@ export function MetricCard({
       {/* Top row: label + trend badge */}
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-[var(--color-text-secondary)]">{label}</p>
-        {trend && (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] px-2 py-0.5 text-xs text-[var(--color-text-secondary)]">
-            {isPositive ? (
-              <TrendingUp className="h-3 w-3" />
-            ) : (
-              <TrendingDown className="h-3 w-3" />
-            )}
+         {trend && (
+           <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-border)] px-2 py-0.5 text-xs text-[var(--color-text-secondary)]">
+             {isPositive ? (
+               <ArrowUpSm className="h-3 w-3" />
+             ) : (
+               <ArrowDownSm className="h-3 w-3" />
+             )}
             {trend.value >= 0 ? "+" : ""}
             {trend.value.toFixed(1)}%
           </span>

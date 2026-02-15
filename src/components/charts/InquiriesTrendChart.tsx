@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { TimeSeriesPoint } from "@/lib/types";
+import { CHART_COLORS } from "@/lib/constants/chart-colors";
 
 interface InquiriesTrendChartProps {
   data: TimeSeriesPoint[];
@@ -21,12 +22,12 @@ export function InquiriesTrendChart({ data }: InquiriesTrendChartProps) {
       <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
         <defs>
           <linearGradient id="inquiryGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0073e6" stopOpacity={0.2} />
-            <stop offset="80%" stopColor="#0073e6" stopOpacity={0} />
+            <stop offset="0%" stopColor={CHART_COLORS.primary} stopOpacity={0.2} />
+            <stop offset="80%" stopColor={CHART_COLORS.primary} stopOpacity={0} />
           </linearGradient>
         </defs>
         <CartesianGrid
-          stroke="#ededed"
+          stroke={CHART_COLORS.muted}
           strokeDasharray=""
           vertical={false}
         />
@@ -36,14 +37,14 @@ export function InquiriesTrendChart({ data }: InquiriesTrendChartProps) {
             const d = new Date(v);
             return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
           }}
-          stroke="#6e6e80"
+          stroke={CHART_COLORS.textMuted}
           fontSize={13}
           tickLine={false}
           axisLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
-          stroke="#6e6e80"
+          stroke={CHART_COLORS.textMuted}
           fontSize={13}
           tickLine={false}
           axisLine={false}
@@ -69,7 +70,7 @@ export function InquiriesTrendChart({ data }: InquiriesTrendChartProps) {
         <Area
           type="linear"
           dataKey="value"
-          stroke="#0073e6"
+          stroke={CHART_COLORS.primary}
           strokeWidth={2}
           fill="url(#inquiryGradient)"
           name="Inquiries"

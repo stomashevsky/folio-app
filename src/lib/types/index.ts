@@ -27,7 +27,7 @@ export type AccountStatus = "default" | "active" | "suspended" | "closed";
 
 export type CheckStatus = "passed" | "failed" | "not_applicable";
 
-export type CheckCategory = "fraud" | "user_behavior";
+export type CheckCategory = "fraud" | "user_action_required" | "validity" | "biometrics";
 
 export type SignalLevel = "low" | "medium" | "high";
 

@@ -19,20 +19,17 @@ import {
   generateSankeyFunnel,
 } from "@/lib/data";
 import { aggregateVolume, aggregateRates, aggregateFunnelRates } from "@/lib/utils/analytics";
-import { DASHBOARD_DATE_SHORTCUTS, type DateRangeShortcut, type DateRange } from "@/lib/constants/date-shortcuts";
+import { DASHBOARD_DATE_SHORTCUTS, type DateRange } from "@/lib/constants/date-shortcuts";
 import type { AnalyticsInterval } from "@/lib/types";
 import { Tabs } from "@plexui/ui/components/Tabs";
 import { Select } from "@plexui/ui/components/Select";
 import { DateRangePicker } from "@plexui/ui/components/DateRangePicker";
+import { ANALYTICS_INTERVAL_OPTIONS } from "@/lib/constants/filter-options";
 
 const tabs = ["Overview", "Funnel"] as const;
 type Tab = (typeof tabs)[number];
 
-const INTERVAL_OPTIONS = [
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
-];
+const INTERVAL_OPTIONS = ANALYTICS_INTERVAL_OPTIONS;
 
 const OptionDesc = ({ children }: { children: React.ReactNode }) => (
   <div className="text-xs text-[var(--color-text-secondary)]">
@@ -54,7 +51,7 @@ const defaultRange: DateRange = DASHBOARD_DATE_SHORTCUTS[1].getDateRange(); // L
 
 export default function InquiryAnalyticsPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <InquiryAnalyticsContent />
     </Suspense>
   );
@@ -67,7 +64,7 @@ function InquiryAnalyticsContent() {
   const [funnelMetric, setFunnelMetric] = useState<SankeyMetric>("counts");
 
   const handleRangeChange = useCallback(
-    (next: DateRange | null, _shortcut?: DateRangeShortcut) => {
+    (next: DateRange | null) => {
       setDateRange(next);
     },
     [],

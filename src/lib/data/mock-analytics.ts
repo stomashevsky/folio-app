@@ -9,6 +9,7 @@ import type {
   SankeyFunnelData,
   SankeyLinkType,
 } from "@/lib/types";
+import { STATUS_COLORS } from "@/lib/constants/status-colors";
 
 export const mockAnalyticsOverview: AnalyticsOverview = {
   totalInquiries: 1234,
@@ -77,12 +78,12 @@ export function generateTimeSeries(
 export const mockInquiriesTimeSeries: TimeSeriesPoint[] = generateTimeSeries("30d");
 
 export const mockStatusDistribution: StatusDistribution[] = [
-  { status: "Approved", count: 1079, percentage: 87.4, color: "#30a46c" },
-  { status: "Declined", count: 74, percentage: 6.0, color: "#e5484d" },
-  { status: "Needs Review", count: 23, percentage: 1.9, color: "#f5a623" },
-  { status: "Pending", count: 35, percentage: 2.8, color: "#3b82f6" },
-  { status: "Expired", count: 18, percentage: 1.5, color: "#8b5cf6" },
-  { status: "Created", count: 5, percentage: 0.4, color: "#06b6d4" },
+  { status: "Approved", count: 1079, percentage: 87.4, color: STATUS_COLORS.Approved },
+  { status: "Declined", count: 74, percentage: 6.0, color: STATUS_COLORS.Declined },
+  { status: "Needs Review", count: 23, percentage: 1.9, color: STATUS_COLORS["Needs Review"] },
+  { status: "Pending", count: 35, percentage: 2.8, color: STATUS_COLORS.Pending },
+  { status: "Expired", count: 18, percentage: 1.5, color: STATUS_COLORS.Expired },
+  { status: "Created", count: 5, percentage: 0.4, color: STATUS_COLORS.Created },
 ];
 
 /** 7-step KYC funnel definition with colors for chart rendering */
@@ -242,8 +243,8 @@ export function generateSankeyFunnel(days: number): SankeyFunnelData {
     { name: "Selfie Passed", color: "#22c55e", count: selfiePassed },
     { name: "Selfie Failed", color: "#ef4444", count: selfieFailed },
     { name: "Completed", color: "#22c55e", count: completed },
-    { name: "Approved", color: "#30a46c", count: approved },
-    { name: "Declined", color: "#ef4444", count: declined },
+    { name: "Approved", color: STATUS_COLORS.Approved, count: approved },
+    { name: "Declined", color: STATUS_COLORS.Declined, count: declined },
     { name: "Abandoned", color: "#94a3b8", count: abandonedStart + abandonedDoc },
   ];
 

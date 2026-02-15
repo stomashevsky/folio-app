@@ -30,12 +30,28 @@ html.dark {
   --navbar-height: 54px;
   --color-nav-active-bg: rgb(0 0 0 / 0.08);
   --color-nav-hover-bg: rgb(0 0 0 / 0.04);
+  --color-chart-primary: #0073e6;
+  --color-chart-secondary: #30a46c;
+  --color-chart-muted: #ededed;
+  --color-chart-text-muted: #6e6e80;
+  --color-chart-accent: #b8e0ff;
+  --color-chart-success: #22c55e;
+  --color-chart-danger: #ef4444;
+  --color-chart-neutral: #94a3b8;
 }
 
 [data-theme="dark"],
 html.dark {
   --color-nav-active-bg: rgb(255 255 255 / 0.08);
   --color-nav-hover-bg: rgb(255 255 255 / 0.04);
+  --color-chart-primary: #4da3ff;
+  --color-chart-secondary: #4ade80;
+  --color-chart-muted: #2a2a2a;
+  --color-chart-text-muted: #a0a0b0;
+  --color-chart-accent: #1e3a5f;
+  --color-chart-success: #4ade80;
+  --color-chart-danger: #f87171;
+  --color-chart-neutral: #64748b;
 }
 
 /* ─── App globals ─── */

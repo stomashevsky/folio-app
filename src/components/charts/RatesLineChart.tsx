@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import type { RateTimeSeriesPoint } from "@/lib/types";
+import { CHART_COLORS } from "@/lib/constants/chart-colors";
 
 interface RatesLineChartProps {
   data: RateTimeSeriesPoint[];
@@ -75,7 +76,7 @@ export function RatesLineChart({ data }: RatesLineChartProps) {
         <Line
           type="monotone"
           dataKey="completionRate"
-          stroke="#0073e6"
+          stroke={CHART_COLORS.primary}
           strokeWidth={2}
           dot={false}
           activeDot={{ r: 4 }}
@@ -84,7 +85,7 @@ export function RatesLineChart({ data }: RatesLineChartProps) {
         <Line
           type="monotone"
           dataKey="approvalRate"
-          stroke="#30a46c"
+          stroke={CHART_COLORS.secondary}
           strokeWidth={2}
           dot={false}
           activeDot={{ r: 4 }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@plexui/ui/components/Badge";
+import Image from "next/image";
 import { Search } from "@plexui/ui/components/Icon";
 import {
   InlineEmpty,
@@ -66,11 +66,13 @@ function VerificationCard({
                 className="group flex cursor-pointer flex-col gap-1.5 outline-none"
                 onClick={() => onOpenLightbox(v.id, i)}
               >
-                <img
-                  src={photo.url}
-                  alt={photo.label}
-                  className="h-[160px] w-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] object-contain transition-opacity group-hover:opacity-90"
-                />
+                <Image
+                   src={photo.url}
+                   alt={photo.label}
+                   width={160}
+                   height={160}
+                   className="h-[160px] w-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] object-contain transition-opacity group-hover:opacity-90"
+                 />
                 <span className="w-full truncate text-center text-xs text-[var(--color-text-tertiary)]">
                   {photo.label}
                 </span>
@@ -113,10 +115,10 @@ function VerificationCard({
           <table className="w-full">
             <thead>
               <tr className="border-b border-[var(--color-border)]">
-                <th className="w-2/5 px-4 py-2 text-left text-xs font-medium text-[var(--color-text-tertiary)]">Check name</th>
-                <th className="w-[140px] px-4 py-2 text-left text-xs font-medium text-[var(--color-text-tertiary)]">Type</th>
-                <th className="w-[80px] px-4 py-2 text-center text-xs font-medium text-[var(--color-text-tertiary)]">Required</th>
-                <th className="w-[100px] px-4 py-2 text-left text-xs font-medium text-[var(--color-text-tertiary)]">Status</th>
+                <th className="w-2/5 px-4 py-2 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">Check name</th>
+                <th className="w-[190px] px-4 py-2 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">Type</th>
+                <th className="w-[80px] px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">Required</th>
+                <th className="w-[100px] px-4 py-2 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">Status</th>
               </tr>
             </thead>
             <tbody>

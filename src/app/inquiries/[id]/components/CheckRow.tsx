@@ -2,6 +2,7 @@ import { Badge } from "@plexui/ui/components/Badge";
 import { Tooltip } from "@plexui/ui/components/Tooltip";
 import { InfoCircle } from "@plexui/ui/components/Icon";
 import { checkDescriptions } from "@/lib/data/check-descriptions";
+import { CHECK_CATEGORY_LABELS, CHECK_CATEGORY_DESCRIPTIONS } from "@/lib/constants/check-category-labels";
 import type { Check } from "@/lib/types";
 
 export function CheckRow({ check }: { check: Check }) {
@@ -20,8 +21,12 @@ export function CheckRow({ check }: { check: Check }) {
           )}
         </span>
       </td>
-      <td className="px-4 py-2.5 text-sm capitalize text-[var(--color-text-secondary)]">
-        {check.category.replace(/_/g, " ")}
+      <td className="px-4 py-2.5 text-sm text-[var(--color-text-secondary)]">
+        <Tooltip content={CHECK_CATEGORY_DESCRIPTIONS[check.category]} side="top" maxWidth={280}>
+          <span className="cursor-help border-b border-dashed border-[var(--color-border)]">
+            {CHECK_CATEGORY_LABELS[check.category]}
+          </span>
+        </Tooltip>
       </td>
       <td className="px-4 py-2.5 text-center text-sm text-[var(--color-text-tertiary)]">
         {check.required && "✓"}

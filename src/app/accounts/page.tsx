@@ -18,43 +18,16 @@ import {
 } from "@plexui/ui/components/DateRangePicker";
 import { Plus, Download } from "@plexui/ui/components/Icon";
 import { LIST_PAGE_DATE_SHORTCUTS } from "@/lib/constants/date-shortcuts";
+import { ACCOUNT_STATUS_OPTIONS } from "@/lib/constants/filter-options";
+import {
+  ACCOUNT_COLUMN_CONFIG,
+  ACCOUNT_DEFAULT_VISIBILITY,
+} from "@/lib/constants/column-configs";
 
-// ─── Filter options ───
+const STATUS_OPTIONS = ACCOUNT_STATUS_OPTIONS;
 
-const STATUS_OPTIONS = [
-  { value: "default", label: "Default" },
-  { value: "active", label: "Active" },
-  { value: "suspended", label: "Suspended" },
-  { value: "closed", label: "Closed" },
-];
-
-// ─── Column config for ColumnSettings panel ───
-
-const COLUMN_CONFIG: ColumnConfig[] = [
-  { id: "name", label: "Name" },
-  { id: "id", label: "Account ID" },
-  { id: "type", label: "Type" },
-  { id: "createdAt", label: "Created at" },
-  { id: "status", label: "Status" },
-  { id: "updatedAt", label: "Updated at" },
-  { id: "referenceId", label: "Reference ID" },
-  { id: "inquiryCount", label: "Inquiries" },
-  { id: "verificationCount", label: "Verifications" },
-  { id: "reportCount", label: "Reports" },
-];
-
-const DEFAULT_VISIBILITY: VisibilityState = {
-  name: true,
-  id: true,
-  type: true,
-  createdAt: true,
-  status: true,
-  updatedAt: false,
-  referenceId: false,
-  inquiryCount: false,
-  verificationCount: false,
-  reportCount: false,
-};
+const COLUMN_CONFIG: ColumnConfig[] = ACCOUNT_COLUMN_CONFIG;
+const DEFAULT_VISIBILITY: VisibilityState = ACCOUNT_DEFAULT_VISIBILITY;
 
 // ─── Column definitions ───
 

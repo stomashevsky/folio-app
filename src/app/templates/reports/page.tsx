@@ -1,6 +1,6 @@
 import { TopBar } from "@/components/layout/TopBar";
 import { EmptyMessage } from "@plexui/ui/components/EmptyMessage";
-import { LayoutTemplate } from "lucide-react";
+import { Grid } from "@plexui/ui/components/Icon";
 
 export default function ReportTemplatesPage() {
   return (
@@ -11,7 +11,7 @@ export default function ReportTemplatesPage() {
       />
       <div className="flex flex-1 items-center justify-center py-12">
         <EmptyMessage>
-          <EmptyMessage.Icon color="secondary"><LayoutTemplate /></EmptyMessage.Icon>
+          <EmptyMessage.Icon color="secondary"><Grid /></EmptyMessage.Icon>
           <EmptyMessage.Title>No templates yet</EmptyMessage.Title>
           <EmptyMessage.Description>
             Report templates define AML screening rules and watchlist

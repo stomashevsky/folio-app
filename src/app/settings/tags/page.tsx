@@ -80,13 +80,13 @@ export default function TagsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] bg-[var(--color-surface-secondary)]">
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
                       Tag
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
                       Inquiries
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-[0.5px] text-[var(--color-text-tertiary)]">
                       Actions
                     </th>
                   </tr>
