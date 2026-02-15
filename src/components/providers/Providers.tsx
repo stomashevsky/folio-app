@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { ThemeSync } from "./ThemeSync";
 import { QueryProvider } from "./QueryProvider";
 import { ScrollbarAutoHide } from "./ScrollbarAutoHide";
+import { TemplateProvider } from "@/lib/stores/template-store";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -15,7 +16,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <ThemeSync>
         <PlexUIProvider linkComponent={Link}>
           <ScrollbarAutoHide />
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <TemplateProvider>{children}</TemplateProvider>
+          </QueryProvider>
         </PlexUIProvider>
       </ThemeSync>
     </ThemeProvider>

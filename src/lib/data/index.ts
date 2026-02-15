@@ -26,3 +26,8 @@ export {
   generateReportRateTimeSeries,
   deriveReportHighlights,
 } from "./mock-analytics";
+export {
+  mockInquiryTemplates,
+  mockVerificationTemplates,
+  mockReportTemplates,
+} from "./mock-templates";

@@ -127,6 +127,71 @@ export interface Account {
   reportCount: number;
 }
 
+// ─── Templates ───
+
+export type TemplateStatus = "active" | "draft" | "archived" | "disabled";
+
+export interface InquiryTemplateStep {
+  verificationType: VerificationType;
+  required: boolean;
+}
+
+export interface InquiryTemplate {
+  id: string; // itmpl_...
+  name: string;
+  description?: string;
+  status: TemplateStatus;
+  lastPublishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  steps: InquiryTemplateStep[];
+  settings: {
+    autoApprove: boolean;
+    expiresInDays: number;
+    maxRetries: number;
+    redirectUrl?: string;
+  };
+}
+
+export interface VerificationCheckConfig {
+  name: string;
+  category: CheckCategory;
+  required: boolean;
+  enabled: boolean;
+}
+
+export interface VerificationTemplate {
+  id: string; // vtmpl_...
+  name: string;
+  type: VerificationType;
+  status: TemplateStatus;
+  lastPublishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  checks: VerificationCheckConfig[];
+  settings: {
+    allowedCountries: string[];
+    maxRetries: number;
+    captureMethod: "auto" | "manual" | "both";
+  };
+}
+
+export interface ReportTemplate {
+  id: string; // rptp_...
+  name: string;
+  type: ReportType;
+  status: TemplateStatus;
+  createdAt: string;
+  updatedAt: string;
+  screeningSources: string[];
+  settings: {
+    matchThreshold: number;
+    continuousMonitoring: boolean;
+    monitoringFrequencyDays: number;
+    enableFuzzyMatch: boolean;
+  };
+}
+
 // ─── Signals ───
 
 export interface Signal {

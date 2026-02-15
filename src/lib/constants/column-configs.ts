@@ -73,6 +73,64 @@ export const REPORT_DEFAULT_VISIBILITY: VisibilityState = {
   continuousMonitoring: false,
 };
 
+// Inquiry template columns
+
+export const INQUIRY_TEMPLATE_COLUMN_CONFIG: ColumnConfig[] = [
+  { id: "name", label: "Name" },
+  { id: "id", label: "Template ID" },
+  { id: "description", label: "Description" },
+  { id: "status", label: "Status" },
+  { id: "lastPublishedAt", label: "Last published at" },
+  { id: "updatedAt", label: "Last updated at" },
+];
+
+export const INQUIRY_TEMPLATE_DEFAULT_VISIBILITY: VisibilityState = {
+  name: true,
+  id: true,
+  description: true,
+  status: true,
+  lastPublishedAt: true,
+  updatedAt: false,
+};
+
+// Verification template columns
+
+export const VERIFICATION_TEMPLATE_COLUMN_CONFIG: ColumnConfig[] = [
+  { id: "name", label: "Name" },
+  { id: "id", label: "Template ID" },
+  { id: "type", label: "Type" },
+  { id: "status", label: "Status" },
+  { id: "lastPublishedAt", label: "Last published at" },
+  { id: "updatedAt", label: "Last updated at" },
+];
+
+export const VERIFICATION_TEMPLATE_DEFAULT_VISIBILITY: VisibilityState = {
+  name: true,
+  id: true,
+  type: true,
+  status: true,
+  lastPublishedAt: true,
+  updatedAt: false,
+};
+
+// Report template columns
+
+export const REPORT_TEMPLATE_COLUMN_CONFIG: ColumnConfig[] = [
+  { id: "name", label: "Name" },
+  { id: "id", label: "Template ID" },
+  { id: "type", label: "Type" },
+  { id: "status", label: "Status" },
+  { id: "updatedAt", label: "Last updated at" },
+];
+
+export const REPORT_TEMPLATE_DEFAULT_VISIBILITY: VisibilityState = {
+  name: true,
+  id: true,
+  type: true,
+  status: true,
+  updatedAt: true,
+};
+
 // Account columns
 
 export const ACCOUNT_COLUMN_CONFIG: ColumnConfig[] = [

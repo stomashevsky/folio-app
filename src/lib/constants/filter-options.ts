@@ -80,6 +80,15 @@ export const CHECK_REQUIREMENT_OPTIONS = [
   { value: "optional", label: "Optional" },
 ];
 
+// Template filter options
+
+export const TEMPLATE_STATUS_OPTIONS = [
+  { value: "active", label: "Active" },
+  { value: "draft", label: "Draft" },
+  { value: "archived", label: "Archived" },
+  { value: "disabled", label: "Disabled" },
+];
+
 // Analytics options
 
 export const ANALYTICS_INTERVAL_OPTIONS = [

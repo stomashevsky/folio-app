@@ -69,6 +69,10 @@ export function getStatusColor(status: string): string {
     suspended: "warning",
     closed: "danger",
     default: "secondary",
+    // Template
+    draft: "warning",
+    archived: "secondary",
+    disabled: "secondary",
   };
   return map[status] ?? "secondary";
 }
